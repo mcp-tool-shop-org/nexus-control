@@ -2,7 +2,7 @@
 
 **Orchestration and approval layer for nexus-router executions.**
 
-A thin control plane that turns "router can execute" into "org can safely decide to execute."
+A thin control plane that turns "router can execute" into "org can safely decide to execute" — with cryptographic proof.
 
 ## Core Promise
 
@@ -11,8 +11,11 @@ Every execution is tied to:
 - A **policy** (approval rules, allowed modes, constraints)
 - An **approval trail** (who approved, when, with what comment)
 - A **nexus-router run_id** (for full execution audit)
+- An **audit package** (cryptographic binding of governance to execution)
 
-Everything is exportable and replayable.
+Everything is exportable, verifiable, and replayable.
+
+> See [ARCHITECTURE.md](ARCHITECTURE.md) for the full mental model and design guarantees.
 
 ## Installation
 
@@ -60,9 +63,9 @@ result = tools.execute(
 
 print(f"Run ID: {result.data['run_id']}")
 
-# 4. Export audit record
-audit = tools.export_audit_record(request_id)
-print(audit.data["canonical_json"])
+# 4. Export audit package (cryptographic proof of governance + execution)
+audit = tools.export_audit_package(request_id)
+print(audit.data["digest"])  # sha256:...
 ```
 
 ## MCP Tools
@@ -74,66 +77,100 @@ print(audit.data["canonical_json"])
 | `nexus-control.execute` | Execute approved request via nexus-router |
 | `nexus-control.status` | Get request state and linked run status |
 | `nexus-control.inspect` | Read-only introspection with human-readable output |
+| `nexus-control.template.create` | Create a named, immutable policy template |
+| `nexus-control.template.get` | Retrieve a template by name |
+| `nexus-control.template.list` | List all templates with optional label filtering |
+| `nexus-control.export_bundle` | Export a decision as a portable, integrity-verified bundle |
+| `nexus-control.import_bundle` | Import a bundle with conflict modes and replay validation |
+| `nexus-control.export_audit_package` | Export audit package binding governance to execution |
 
-## Inspect Tool
+## Audit Packages (v0.6.0)
 
-The `inspect` tool provides read-only introspection with router-style output:
+A single JSON artifact that cryptographically binds:
+- **What was allowed** (control bundle)
+- **What actually ran** (router execution)
+- **Why it was allowed** (control-router link)
+
+Into one verifiable `binding_digest`.
 
 ```python
-result = tools.inspect(request_id)
-print(result.data["rendered"])
+from nexus_control import export_audit_package, verify_audit_package
+
+# Export
+result = export_audit_package(store, decision_id)
+package = result.package
+
+# Verify (6 independent checks, no short-circuiting)
+verification = verify_audit_package(package)
+assert verification.ok
 ```
 
-Output:
-```
-✓ Decision approved (ready to execute)
+Two router modes:
 
-## Decision
-  ID:           550e8400-e29b-41d4-a716-446655440000
-  Status:       APPROVED
-  Mode:         apply
-  Goal:         rotate keys for prod cluster
-  Created:      2026-01-28T22:14:03Z
-  Last update:  2026-01-28T22:29:10Z
+| Mode | Description | Use Case |
+|------|-------------|----------|
+| **Reference** | `run_id` + `router_digest` | CI, internal systems |
+| **Embedded** | Full router bundle included | Regulators, long-term archival |
 
-## Approval
-  Required:     2
-  Approved:     2 (threshold met)
+## Decision Templates (v0.3.0)
 
-  Approvers:
-    - alice  (expires: —)
-      "Reviewed blast radius, ok."
-    - bob    (expires: 2026-01-29T22:29:10Z)
-      "Ok to proceed."
+Named, immutable policy bundles that can be reused across decisions:
 
-## Policy
-  Allowed modes:          apply
-  Required capabilities:  timeout, external
-  max_steps:              10
+```python
+tools.template_create(
+    name="prod-deploy",
+    actor=Actor(type="human", id="platform-team"),
+    min_approvals=2,
+    allowed_modes=["dry_run", "apply"],
+    require_adapter_capabilities=["timeout"],
+    labels=["prod"],
+)
 
-## Execution
-  Requested:    —
-  Run ID:       —
-  Adapter:      —
-  Router link:  —
-
-## Timeline
-   0  DECISION_CREATED       actor=alice        2026-01-28T22:14:03Z
-   1  POLICY_ATTACHED        actor=alice        2026-01-28T22:14:04Z
-   2  APPROVAL_GRANTED       actor=alice        2026-01-28T22:18:41Z
-   3  APPROVAL_GRANTED       actor=bob          2026-01-28T22:29:10Z
-
-## Integrity
-  Decision digest:        sha256:01b7...
+# Use template with optional overrides
+result = tools.request(
+    goal="Deploy v2.1.0",
+    actor=actor,
+    template_name="prod-deploy",
+    override_min_approvals=3,  # Stricter for this deploy
+)
 ```
 
-After execution, includes router link:
+## Decision Lifecycle (v0.4.0)
+
+Computed lifecycle with blocking reasons and timeline:
+
+```python
+from nexus_control import compute_lifecycle
+
+lifecycle = compute_lifecycle(decision, events, policy)
+
+# Blocking reasons (triage-ladder ordered)
+for reason in lifecycle.blocking_reasons:
+    print(f"{reason.code}: {reason.message}")
+
+# Timeline with truncation
+for entry in lifecycle.timeline:
+    print(f"  {entry.seq}  {entry.label}")
 ```
-## Router (linked)
-  Router request digest:  sha256:2b0c...
-  Router result digest:   sha256:8cfe...
-  Inspect hint:           nexus-router.inspect { "run_id": "run_01J9N..." }
+
+## Export/Import Bundles (v0.5.0)
+
+Portable, integrity-verified decision bundles:
+
+```python
+# Export
+bundle_result = tools.export_bundle(decision_id)
+bundle_json = bundle_result.data["canonical_json"]
+
+# Import with conflict handling
+import_result = tools.import_bundle(
+    bundle_json,
+    conflict_mode="new_decision_id",
+    replay_after_import=True,
+)
 ```
+
+Conflict modes: `reject_on_conflict`, `new_decision_id`, `overwrite`
 
 ## Data Model
 
@@ -156,53 +193,22 @@ decisions (header)
 
 ### Policy Model
 
-Policies define the rules for approval and execution:
-
 ```python
 Policy(
-    min_approvals=2,              # N-of-M approval threshold
-    allowed_modes=["dry_run", "apply"],  # Permitted execution modes
-    require_adapter_capabilities=["timeout"],  # Required adapter features
-    max_steps=50,                 # Passed to nexus-router
-    labels=["prod", "finance"],   # Governance routing
+    min_approvals=2,
+    allowed_modes=["dry_run", "apply"],
+    require_adapter_capabilities=["timeout"],
+    max_steps=50,
+    labels=["prod", "finance"],
 )
 ```
 
 ### Approval Model
 
-Approvals are events with actors, not booleans:
 - Counted by distinct `actor.id`
 - Can include `comment` and optional `expires_at`
 - Can be revoked (before execution)
 - Execution requires approvals to satisfy policy **at execution time**
-
-## Architecture
-
-```
-┌─────────────────────────────────────────────────┐
-│                 nexus-control                    │
-│  ┌───────────┐  ┌───────────┐  ┌─────────────┐  │
-│  │  request  │  │  approve  │  │   execute   │  │
-│  └─────┬─────┘  └─────┬─────┘  └──────┬──────┘  │
-│        │              │               │         │
-│        ▼              ▼               ▼         │
-│  ┌─────────────────────────────────────────┐   │
-│  │           Decision Store (SQLite)        │   │
-│  │  - Event log (append-only)              │   │
-│  │  - Replay for state                     │   │
-│  │  - Exportable audit records             │   │
-│  └─────────────────────────────────────────┘   │
-│                       │                         │
-└───────────────────────┼─────────────────────────┘
-                        │
-                        ▼
-              ┌─────────────────┐
-              │  nexus-router   │
-              │  (execution)    │
-              └─────────────────┘
-```
-
-Control plane stores **links, not copies**. Router remains the flight recorder.
 
 ## Development
 
@@ -210,10 +216,10 @@ Control plane stores **links, not copies**. Router remains the flight recorder.
 # Install dev dependencies
 pip install -e ".[dev]"
 
-# Run tests
+# Run tests (203 tests)
 pytest
 
-# Type check
+# Type check (strict mode)
 pyright
 
 # Lint
@@ -225,28 +231,26 @@ ruff check .
 ```
 nexus-control/
 ├── nexus_control/
-│   ├── __init__.py
-│   ├── tool.py           # MCP tool entrypoints
-│   ├── store.py          # SQLite event store
-│   ├── events.py         # Event type definitions
-│   ├── policy.py         # Policy validation + router compilation
-│   ├── decision.py       # State machine + replay
-│   ├── canonical_json.py # Deterministic serialization
-│   └── integrity.py      # SHA256 helpers
-├── schemas/
-│   ├── nexus-control.request.v0.1.json
-│   ├── nexus-control.approve.v0.1.json
-│   ├── nexus-control.execute.v0.1.json
-│   ├── nexus-control.status.v0.1.json
-│   └── nexus-control.inspect.v0.1.json
-├── tests/
-│   ├── test_decision_replay.py
-│   ├── test_policy_compile.py
-│   ├── test_approval_threshold.py
-│   ├── test_execute_links_run.py
-│   └── test_inspect.py
-├── README.md
+│   ├── __init__.py          # Public API + version
+│   ├── tool.py              # MCP tool entrypoints (11 tools)
+│   ├── store.py             # SQLite event store
+│   ├── events.py            # Event type definitions
+│   ├── policy.py            # Policy validation + router compilation
+│   ├── decision.py          # State machine + replay
+│   ├── lifecycle.py         # Blocking reasons, timeline, progress
+│   ├── template.py          # Named immutable policy templates
+│   ├── export.py            # Decision bundle export
+│   ├── import_.py           # Bundle import with conflict modes
+│   ├── bundle.py            # Bundle types + digest computation
+│   ├── audit_package.py     # Audit package types + verification
+│   ├── audit_export.py      # Audit package export + rendering
+│   ├── canonical_json.py    # Deterministic serialization
+│   └── integrity.py         # SHA-256 helpers
+├── schemas/                 # JSON schemas for tool inputs
+├── tests/                   # 203 tests across 9 test files
+├── ARCHITECTURE.md          # Mental model + design guarantees
 ├── QUICKSTART.md
+├── README.md
 └── pyproject.toml
 ```
 

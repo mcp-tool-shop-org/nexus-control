@@ -1,13 +1,34 @@
-> ⚠️ **This repository has moved to [nexus-suite](https://github.com/mcp-tool-shop/nexus-suite)**
-> Source now lives at: `src/nexus-control/`
+<p align="center">
+  <img src="logo.png" alt="nexus-control logo" width="120" />
+</p>
+
+<h1 align="center">nexus-control</h1>
+
+<p align="center">
+  Orchestration and approval layer for nexus-router executions.
+</p>
+
+<p align="center">
+  <a href="https://github.com/mcp-tool-shop-org/nexus-control/actions/workflows/ci.yml"><img src="https://github.com/mcp-tool-shop-org/nexus-control/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://pypi.org/project/nexus-control/"><img src="https://img.shields.io/pypi/v/nexus-control" alt="PyPI" /></a>
+  <a href="https://github.com/mcp-tool-shop-org/nexus-control/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mcp-tool-shop-org/nexus-control" alt="License: MIT" /></a>
+  <a href="https://pypi.org/project/nexus-control/"><img src="https://img.shields.io/pypi/pyversions/nexus-control" alt="Python versions" /></a>
+</p>
 
 ---
 
-# nexus-control
 
-**Orchestration and approval layer for nexus-router executions.**
 
 A thin control plane that turns "router can execute" into "org can safely decide to execute" — with cryptographic proof.
+
+## Brand + Tool ID
+
+| Key | Value |
+|-----|-------|
+| Brand / repo | `nexus-control` |
+| Python package | `nexus_control` |
+| Author | [mcp-tool-shop](https://github.com/mcp-tool-shop) |
+| License | MIT |
 
 ## Core Promise
 
@@ -30,7 +51,7 @@ pip install nexus-control
 
 Or from source:
 ```bash
-git clone https://github.com/mcp-tool-shop/nexus-control
+git clone https://github.com/mcp-tool-shop-org/nexus-control
 cd nexus-control
 pip install -e ".[dev]"
 ```
@@ -262,3 +283,9 @@ nexus-control/
 ## License
 
 MIT
+
+---
+
+<p align="center">
+  Built by <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
+</p>

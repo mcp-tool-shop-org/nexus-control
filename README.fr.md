@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="README.ja.md">日本語</a> | <a href="README.zh.md">中文</a> | <a href="README.es.md">Español</a> | <a href="README.fr.md">Français</a> | <a href="README.hi.md">हिन्दी</a> | <a href="README.it.md">Italiano</a> | <a href="README.pt-BR.md">Português (BR)</a>
+  <a href="README.ja.md">日本語</a> | <a href="README.zh.md">中文</a> | <a href="README.es.md">Español</a> | <a href="README.md">English</a> | <a href="README.hi.md">हिन्दी</a> | <a href="README.it.md">Italiano</a> | <a href="README.pt-BR.md">Português (BR)</a>
 </p>
 
 <p align="center">
@@ -22,29 +22,29 @@
 
 
 
-A thin control plane that turns "router can execute" into "org can safely decide to execute" — with cryptographic proof.
+Un plan de contrôle minimal qui transforme "le routeur peut exécuter" en "l'organisation peut décider en toute sécurité de l'exécuter" – avec une preuve cryptographique.
 
-## Brand + Tool ID
+## Identifiant de la marque + de l'outil
 
-| Key | Value |
-|-----|-------|
-| Brand / repo | `nexus-control` |
-| Python package | `nexus_control` |
-| Author | [mcp-tool-shop](https://github.com/mcp-tool-shop) |
-| License | MIT |
+| Clé | Valeur |
+| ----- | ------- |
+| Marque / dépôt | `nexus-control` |
+| Paquet Python | `nexus_control` |
+| Auteur | [mcp-tool-shop](https://github.com/mcp-tool-shop) |
+| Licence | MIT |
 
-## Core Promise
+## Promesse fondamentale
 
-Every execution is tied to:
-- A **decision** (the request + policy)
-- A **policy** (approval rules, allowed modes, constraints)
-- An **approval trail** (who approved, when, with what comment)
-- A **nexus-router run_id** (for full execution audit)
-- An **audit package** (cryptographic binding of governance to execution)
+Chaque exécution est liée à :
+- Une **décision** (la requête + la politique)
+- Une **politique** (règles d'approbation, modes autorisés, contraintes)
+- Une **traçabilité des approbations** (qui a approuvé, quand, avec quel commentaire)
+- Un **identifiant d'exécution du routeur nexus** (pour un audit complet de l'exécution)
+- Un **paquet d'audit** (liaison cryptographique de la gouvernance à l'exécution)
 
-Everything is exportable, verifiable, and replayable.
+Tout est exportable, vérifiable et reproductible.
 
-> See [ARCHITECTURE.md](ARCHITECTURE.md) for the full mental model and design guarantees.
+> Consultez [ARCHITECTURE.md](ARCHITECTURE.md) pour comprendre le modèle conceptuel complet et les garanties de conception.
 
 ## Installation
 
@@ -52,14 +52,14 @@ Everything is exportable, verifiable, and replayable.
 pip install nexus-control
 ```
 
-Or from source:
+Ou à partir du code source :
 ```bash
 git clone https://github.com/mcp-tool-shop-org/nexus-control
 cd nexus-control
 pip install -e ".[dev]"
 ```
 
-## Quick Start
+## Démarrage rapide
 
 ```python
 from nexus_control import NexusControlTools
@@ -97,30 +97,30 @@ audit = tools.export_audit_package(request_id)
 print(audit.data["digest"])  # sha256:...
 ```
 
-## MCP Tools
+## Outils MCP
 
-| Tool | Description |
-|------|-------------|
-| `nexus-control.request` | Create an execution request with goal, policy, and approvers |
-| `nexus-control.approve` | Approve a request (supports N-of-M approvals) |
-| `nexus-control.execute` | Execute approved request via nexus-router |
-| `nexus-control.status` | Get request state and linked run status |
-| `nexus-control.inspect` | Read-only introspection with human-readable output |
-| `nexus-control.template.create` | Create a named, immutable policy template |
-| `nexus-control.template.get` | Retrieve a template by name |
-| `nexus-control.template.list` | List all templates with optional label filtering |
-| `nexus-control.export_bundle` | Export a decision as a portable, integrity-verified bundle |
-| `nexus-control.import_bundle` | Import a bundle with conflict modes and replay validation |
-| `nexus-control.export_audit_package` | Export audit package binding governance to execution |
+| Outil | Description |
+| ------ | ------------- |
+| `nexus-control.request` | Créer une demande d'exécution avec un objectif, une politique et des approbateurs. |
+| `nexus-control.approve` | Approuver une demande (prend en charge les approbations N-sur-M). |
+| `nexus-control.execute` | Exécuter la demande approuvée via le routeur nexus. |
+| `nexus-control.status` | Obtenir l'état de la demande et le statut de l'exécution associée. |
+| `nexus-control.inspect` | Introspection en lecture seule avec une sortie lisible par l'homme. |
+| `nexus-control.template.create` | Créer un modèle de politique nommé et immuable. |
+| `nexus-control.template.get` | Récupérer un modèle par son nom. |
+| `nexus-control.template.list` | Lister tous les modèles avec un filtrage optionnel par étiquette. |
+| `nexus-control.export_bundle` | Exporter une décision sous forme de paquet portable et vérifié. |
+| `nexus-control.import_bundle` | Importer un paquet avec des modes de conflit et une validation de relecture. |
+| `nexus-control.export_audit_package` | Exporter le paquet d'audit reliant la gouvernance à l'exécution. |
 
-## Audit Packages (v0.6.0)
+## Paquets d'audit (v0.6.0)
 
-A single JSON artifact that cryptographically binds:
-- **What was allowed** (control bundle)
-- **What actually ran** (router execution)
-- **Why it was allowed** (control-router link)
+Un seul artefact JSON qui lie cryptographiquement :
+- **Ce qui a été autorisé** (paquet de contrôle)
+- **Ce qui a réellement été exécuté** (exécution du routeur)
+- **Pourquoi cela a été autorisé** (lien entre le contrôle et le routeur)
 
-Into one verifiable `binding_digest`.
+Dans un seul digest vérifiable `binding_digest`.
 
 ```python
 from nexus_control import export_audit_package, verify_audit_package
@@ -134,16 +134,16 @@ verification = verify_audit_package(package)
 assert verification.ok
 ```
 
-Two router modes:
+Deux modes de routeur :
 
-| Mode | Description | Use Case |
-|------|-------------|----------|
-| **Reference** | `run_id` + `router_digest` | CI, internal systems |
-| **Embedded** | Full router bundle included | Regulators, long-term archival |
+| Mode | Description | Cas d'utilisation |
+| ------ | ------------- | ---------- |
+| **Reference** | `run_id` + `router_digest` | CI, systèmes internes |
+| **Embedded** | Paquet de routeur complet inclus | Organismes de réglementation, archivage à long terme |
 
-## Decision Templates (v0.3.0)
+## Modèles de décision (v0.3.0)
 
-Named, immutable policy bundles that can be reused across decisions:
+Paquets de politiques nommés et immuables qui peuvent être réutilisés dans différentes décisions :
 
 ```python
 tools.template_create(
@@ -164,9 +164,9 @@ result = tools.request(
 )
 ```
 
-## Decision Lifecycle (v0.4.0)
+## Cycle de vie de la décision (v0.4.0)
 
-Computed lifecycle with blocking reasons and timeline:
+Cycle de vie calculé avec des raisons de blocage et une chronologie :
 
 ```python
 from nexus_control import compute_lifecycle
@@ -182,9 +182,9 @@ for entry in lifecycle.timeline:
     print(f"  {entry.seq}  {entry.label}")
 ```
 
-## Export/Import Bundles (v0.5.0)
+## Exportation/Importation de paquets (v0.5.0)
 
-Portable, integrity-verified decision bundles:
+Paquets de décision portables et vérifiés :
 
 ```python
 # Export
@@ -199,13 +199,13 @@ import_result = tools.import_bundle(
 )
 ```
 
-Conflict modes: `reject_on_conflict`, `new_decision_id`, `overwrite`
+Modes de conflit : `reject_on_conflict`, `new_decision_id`, `overwrite`
 
-## Data Model
+## Modèle de données
 
-### Event-Sourced Design
+### Conception basée sur les événements
 
-All state is derived by replaying an immutable event log:
+L'état est dérivé en rejouant un journal d'événements immuable :
 
 ```
 decisions (header)
@@ -220,7 +220,7 @@ decisions (header)
         └── EXECUTION_FAILED
 ```
 
-### Policy Model
+### Modèle de politique
 
 ```python
 Policy(
@@ -232,14 +232,14 @@ Policy(
 )
 ```
 
-### Approval Model
+### Modèle d'approbation
 
-- Counted by distinct `actor.id`
-- Can include `comment` and optional `expires_at`
-- Can be revoked (before execution)
-- Execution requires approvals to satisfy policy **at execution time**
+- Comptabilisé par `actor.id` distinct.
+- Peut inclure un `comment` et une date d'expiration optionnelle (`expires_at`).
+- Peut être révoqué (avant l'exécution).
+- L'exécution nécessite des approbations pour satisfaire la politique **au moment de l'exécution**.
 
-## Development
+## Développement
 
 ```bash
 # Install dev dependencies
@@ -255,7 +255,7 @@ pyright
 ruff check .
 ```
 
-## Project Structure
+## Structure du projet
 
 ```
 nexus-control/
@@ -283,7 +283,7 @@ nexus-control/
 └── pyproject.toml
 ```
 
-## License
+## Licence
 
 MIT
 

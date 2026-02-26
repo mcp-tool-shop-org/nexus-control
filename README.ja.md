@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="README.ja.md">日本語</a> | <a href="README.zh.md">中文</a> | <a href="README.es.md">Español</a> | <a href="README.fr.md">Français</a> | <a href="README.hi.md">हिन्दी</a> | <a href="README.it.md">Italiano</a> | <a href="README.pt-BR.md">Português (BR)</a>
+  <a href="README.md">English</a> | <a href="README.zh.md">中文</a> | <a href="README.es.md">Español</a> | <a href="README.fr.md">Français</a> | <a href="README.hi.md">हिन्दी</a> | <a href="README.it.md">Italiano</a> | <a href="README.pt-BR.md">Português (BR)</a>
 </p>
 
 <p align="center">
@@ -22,44 +22,44 @@
 
 
 
-A thin control plane that turns "router can execute" into "org can safely decide to execute" — with cryptographic proof.
+薄い制御層により、「ルーターが実行できる」という状態を、「組織が安全に実行することを決定できる」という状態に変換します。暗号学的証明を使用します。
 
-## Brand + Tool ID
+## ブランド + ツールID
 
-| Key | Value |
-|-----|-------|
-| Brand / repo | `nexus-control` |
-| Python package | `nexus_control` |
-| Author | [mcp-tool-shop](https://github.com/mcp-tool-shop) |
-| License | MIT |
+| キー | 値 |
+| ----- | ------- |
+| ブランド / リポジトリ | `nexus-control` |
+| Pythonパッケージ | `nexus_control` |
+| 作者 | [mcp-tool-shop](https://github.com/mcp-tool-shop) |
+| ライセンス | MIT |
 
-## Core Promise
+## 主要な約束
 
-Every execution is tied to:
-- A **decision** (the request + policy)
-- A **policy** (approval rules, allowed modes, constraints)
-- An **approval trail** (who approved, when, with what comment)
-- A **nexus-router run_id** (for full execution audit)
-- An **audit package** (cryptographic binding of governance to execution)
+すべての実行は以下のものと紐付けられます。
+- **決定** (リクエスト + ポリシー)
+- **ポリシー** (承認ルール、許可されたモード、制約)
+- **承認履歴** (誰がいつ、どのようなコメントで承認したか)
+- **nexus-routerのrun_id** (完全な実行監査用)
+- **監査パッケージ** (ガバナンスと実行を暗号的に紐付けるもの)
 
-Everything is exportable, verifiable, and replayable.
+すべてをエクスポート、検証、および再実行できます。
 
-> See [ARCHITECTURE.md](ARCHITECTURE.md) for the full mental model and design guarantees.
+> アーキテクチャ全体の概念モデルと設計保証については、[ARCHITECTURE.md](ARCHITECTURE.md) を参照してください。
 
-## Installation
+## インストール
 
 ```bash
 pip install nexus-control
 ```
 
-Or from source:
+または、ソースコードから：
 ```bash
 git clone https://github.com/mcp-tool-shop-org/nexus-control
 cd nexus-control
 pip install -e ".[dev]"
 ```
 
-## Quick Start
+## クイックスタート
 
 ```python
 from nexus_control import NexusControlTools
@@ -97,30 +97,30 @@ audit = tools.export_audit_package(request_id)
 print(audit.data["digest"])  # sha256:...
 ```
 
-## MCP Tools
+## MCPツール
 
-| Tool | Description |
-|------|-------------|
-| `nexus-control.request` | Create an execution request with goal, policy, and approvers |
-| `nexus-control.approve` | Approve a request (supports N-of-M approvals) |
-| `nexus-control.execute` | Execute approved request via nexus-router |
-| `nexus-control.status` | Get request state and linked run status |
-| `nexus-control.inspect` | Read-only introspection with human-readable output |
-| `nexus-control.template.create` | Create a named, immutable policy template |
-| `nexus-control.template.get` | Retrieve a template by name |
-| `nexus-control.template.list` | List all templates with optional label filtering |
-| `nexus-control.export_bundle` | Export a decision as a portable, integrity-verified bundle |
-| `nexus-control.import_bundle` | Import a bundle with conflict modes and replay validation |
-| `nexus-control.export_audit_package` | Export audit package binding governance to execution |
+| ツール | 説明 |
+| ------ | ------------- |
+| `nexus-control.request` | 実行リクエストを作成します（目標、ポリシー、承認者を含む）。 |
+| `nexus-control.approve` | リクエストを承認します（N-of-M承認をサポート）。 |
+| `nexus-control.execute` | nexus-router経由で承認されたリクエストを実行します。 |
+| `nexus-control.status` | リクエストの状態と関連する実行ステータスを取得します。 |
+| `nexus-control.inspect` | 読み取り専用のインスペクションを行い、人間が読める形式で出力します。 |
+| `nexus-control.template.create` | 名前付きで不変のポリシーテンプレートを作成します。 |
+| `nexus-control.template.get` | 名前でテンプレートを取得します。 |
+| `nexus-control.template.list` | オプションでラベルでフィルタリングして、すべてのテンプレートを一覧表示します。 |
+| `nexus-control.export_bundle` | 決定を、ポータブルで整合性が検証されたバンドルとしてエクスポートします。 |
+| `nexus-control.import_bundle` | 競合モードと再実行検証でバンドルをインポートします。 |
+| `nexus-control.export_audit_package` | ガバナンスと実行を紐付ける監査パッケージをエクスポートします。 |
 
-## Audit Packages (v0.6.0)
+## 監査パッケージ (v0.6.0)
 
-A single JSON artifact that cryptographically binds:
-- **What was allowed** (control bundle)
-- **What actually ran** (router execution)
-- **Why it was allowed** (control-router link)
+暗号的に以下のものを紐付ける単一のJSON形式のデータ：
+- **許可された内容** (制御バンドル)
+- **実際に実行された内容** (ルーターの実行)
+- **許可された理由** (制御ルーターのリンク)
 
-Into one verifiable `binding_digest`.
+これらを検証可能な `binding_digest` にまとめます。
 
 ```python
 from nexus_control import export_audit_package, verify_audit_package
@@ -134,16 +134,16 @@ verification = verify_audit_package(package)
 assert verification.ok
 ```
 
-Two router modes:
+ルーターのモード：
 
-| Mode | Description | Use Case |
-|------|-------------|----------|
-| **Reference** | `run_id` + `router_digest` | CI, internal systems |
-| **Embedded** | Full router bundle included | Regulators, long-term archival |
+| モード | 説明 | ユースケース |
+| ------ | ------------- | ---------- |
+| **Reference** | `run_id` + `router_digest` | CI、内部システム |
+| **Embedded** | 完全なルーターバンドルが含まれています | 規制当局、長期アーカイブ |
 
-## Decision Templates (v0.3.0)
+## 決定テンプレート (v0.3.0)
 
-Named, immutable policy bundles that can be reused across decisions:
+決定間で再利用できる名前付きで不変のポリシーバンドルです。
 
 ```python
 tools.template_create(
@@ -164,9 +164,9 @@ result = tools.request(
 )
 ```
 
-## Decision Lifecycle (v0.4.0)
+## 決定ライフサイクル (v0.4.0)
 
-Computed lifecycle with blocking reasons and timeline:
+ブロック理由とタイムラインを含む計算されたライフサイクルです。
 
 ```python
 from nexus_control import compute_lifecycle
@@ -182,9 +182,9 @@ for entry in lifecycle.timeline:
     print(f"  {entry.seq}  {entry.label}")
 ```
 
-## Export/Import Bundles (v0.5.0)
+## バンドルのエクスポート/インポート (v0.5.0)
 
-Portable, integrity-verified decision bundles:
+ポータブルで整合性が検証された決定バンドルです。
 
 ```python
 # Export
@@ -199,13 +199,13 @@ import_result = tools.import_bundle(
 )
 ```
 
-Conflict modes: `reject_on_conflict`, `new_decision_id`, `overwrite`
+競合モード：`reject_on_conflict`、`new_decision_id`、`overwrite`
 
-## Data Model
+## データモデル
 
-### Event-Sourced Design
+### イベントソーシング設計
 
-All state is derived by replaying an immutable event log:
+すべての状態は、不変のイベントログを再生することによって導出されます。
 
 ```
 decisions (header)
@@ -220,7 +220,7 @@ decisions (header)
         └── EXECUTION_FAILED
 ```
 
-### Policy Model
+### ポリシーモデル
 
 ```python
 Policy(
@@ -232,14 +232,14 @@ Policy(
 )
 ```
 
-### Approval Model
+### 承認モデル
 
-- Counted by distinct `actor.id`
-- Can include `comment` and optional `expires_at`
-- Can be revoked (before execution)
-- Execution requires approvals to satisfy policy **at execution time**
+- 異なる `actor.id` でカウントされます。
+- `comment` とオプションの `expires_at` を含めることができます。
+- 実行前に取り消すことができます。
+- 実行には、ポリシーを満たすための承認が必要です（実行時）。
 
-## Development
+## 開発
 
 ```bash
 # Install dev dependencies
@@ -255,7 +255,7 @@ pyright
 ruff check .
 ```
 
-## Project Structure
+## プロジェクト構造
 
 ```
 nexus-control/
@@ -283,7 +283,7 @@ nexus-control/
 └── pyproject.toml
 ```
 
-## License
+## ライセンス
 
 MIT
 

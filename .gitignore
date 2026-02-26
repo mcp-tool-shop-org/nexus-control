@@ -34,3 +34,11 @@ coverage.xml
 # OS
 .DS_Store
 Thumbs.db
+
+# Site
+site/.astro/
+site/dist/
+site/node_modules/
+
+# Polyglot
+.polyglot-cache.json

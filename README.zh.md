@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="README.ja.md">日本語</a> | <a href="README.zh.md">中文</a> | <a href="README.es.md">Español</a> | <a href="README.fr.md">Français</a> | <a href="README.hi.md">हिन्दी</a> | <a href="README.it.md">Italiano</a> | <a href="README.pt-BR.md">Português (BR)</a>
+  <a href="README.ja.md">日本語</a> | <a href="README.md">English</a> | <a href="README.es.md">Español</a> | <a href="README.fr.md">Français</a> | <a href="README.hi.md">हिन्दी</a> | <a href="README.it.md">Italiano</a> | <a href="README.pt-BR.md">Português (BR)</a>
 </p>
 
 <p align="center">
@@ -22,44 +22,44 @@
 
 
 
-A thin control plane that turns "router can execute" into "org can safely decide to execute" — with cryptographic proof.
+一个精简的控制层，将“路由器可以执行”转化为“组织可以安全地决定执行”，并提供密码学证明。
 
-## Brand + Tool ID
+## 品牌 + 工具 ID
 
-| Key | Value |
-|-----|-------|
-| Brand / repo | `nexus-control` |
-| Python package | `nexus_control` |
-| Author | [mcp-tool-shop](https://github.com/mcp-tool-shop) |
-| License | MIT |
+| 键 | 值 |
+| ----- | ------- |
+| 品牌 / 仓库 | `nexus-control` |
+| Python 包 | `nexus_control` |
+| 作者 | [mcp-tool-shop](https://github.com/mcp-tool-shop) |
+| 许可证 | MIT |
 
-## Core Promise
+## 核心承诺
 
-Every execution is tied to:
-- A **decision** (the request + policy)
-- A **policy** (approval rules, allowed modes, constraints)
-- An **approval trail** (who approved, when, with what comment)
-- A **nexus-router run_id** (for full execution audit)
-- An **audit package** (cryptographic binding of governance to execution)
+每次执行都与以下内容相关联：
+- 一个**决策**（请求 + 策略）
+- 一个**策略**（审批规则、允许模式、约束）
+- 一个**审批记录**（谁批准的、何时批准的、以及审批意见）
+- 一个**nexus-router 运行 ID**（用于完整的执行审计）
+- 一个**审计包**（将治理与执行进行密码学绑定）
 
-Everything is exportable, verifiable, and replayable.
+所有内容都可以导出、验证和重放。
 
-> See [ARCHITECTURE.md](ARCHITECTURE.md) for the full mental model and design guarantees.
+> 请参阅 [ARCHITECTURE.md](ARCHITECTURE.md)，了解完整的模型和设计保证。
 
-## Installation
+## 安装
 
 ```bash
 pip install nexus-control
 ```
 
-Or from source:
+或者从源代码安装：
 ```bash
 git clone https://github.com/mcp-tool-shop-org/nexus-control
 cd nexus-control
 pip install -e ".[dev]"
 ```
 
-## Quick Start
+## 快速开始
 
 ```python
 from nexus_control import NexusControlTools
@@ -97,30 +97,30 @@ audit = tools.export_audit_package(request_id)
 print(audit.data["digest"])  # sha256:...
 ```
 
-## MCP Tools
+## MCP 工具
 
-| Tool | Description |
-|------|-------------|
-| `nexus-control.request` | Create an execution request with goal, policy, and approvers |
-| `nexus-control.approve` | Approve a request (supports N-of-M approvals) |
-| `nexus-control.execute` | Execute approved request via nexus-router |
-| `nexus-control.status` | Get request state and linked run status |
-| `nexus-control.inspect` | Read-only introspection with human-readable output |
-| `nexus-control.template.create` | Create a named, immutable policy template |
-| `nexus-control.template.get` | Retrieve a template by name |
-| `nexus-control.template.list` | List all templates with optional label filtering |
-| `nexus-control.export_bundle` | Export a decision as a portable, integrity-verified bundle |
-| `nexus-control.import_bundle` | Import a bundle with conflict modes and replay validation |
-| `nexus-control.export_audit_package` | Export audit package binding governance to execution |
+| 工具 | 描述 |
+| ------ | ------------- |
+| `nexus-control.request` | 创建带有目标、策略和审批人的执行请求 |
+| `nexus-control.approve` | 审批请求（支持 N-of-M 审批） |
+| `nexus-control.execute` | 通过 nexus-router 执行已批准的请求 |
+| `nexus-control.status` | 获取请求状态和相关运行状态 |
+| `nexus-control.inspect` | 只读的内省，并提供可读的输出 |
+| `nexus-control.template.create` | 创建命名且不可变的策略模板 |
+| `nexus-control.template.get` | 通过名称检索模板 |
+| `nexus-control.template.list` | 列出所有模板，并可选择使用标签进行过滤 |
+| `nexus-control.export_bundle` | 将决策导出为可移植且具有完整性验证的包 |
+| `nexus-control.import_bundle` | 导入包，并处理冲突模式和重放验证 |
+| `nexus-control.export_audit_package` | 导出审计包，将治理与执行绑定 |
 
-## Audit Packages (v0.6.0)
+## 审计包 (v0.6.0)
 
-A single JSON artifact that cryptographically binds:
-- **What was allowed** (control bundle)
-- **What actually ran** (router execution)
-- **Why it was allowed** (control-router link)
+一个 JSON 文件，通过密码学方式绑定：
+- **允许的内容**（控制包）
+- **实际运行的内容**（路由器执行）
+- **允许的原因**（控制-路由器链接）
 
-Into one verifiable `binding_digest`.
+形成一个可验证的 `binding_digest`。
 
 ```python
 from nexus_control import export_audit_package, verify_audit_package
@@ -134,16 +134,16 @@ verification = verify_audit_package(package)
 assert verification.ok
 ```
 
-Two router modes:
+两种路由器模式：
 
-| Mode | Description | Use Case |
-|------|-------------|----------|
-| **Reference** | `run_id` + `router_digest` | CI, internal systems |
-| **Embedded** | Full router bundle included | Regulators, long-term archival |
+| 模式 | 描述 | 用例 |
+| ------ | ------------- | ---------- |
+| **Reference** | `run_id` + `router_digest` | CI、内部系统 |
+| **Embedded** | 包含完整的路由器包 | 监管机构、长期归档 |
 
-## Decision Templates (v0.3.0)
+## 决策模板 (v0.3.0)
 
-Named, immutable policy bundles that can be reused across decisions:
+命名且不可变的策略包，可以在决策中重用：
 
 ```python
 tools.template_create(
@@ -164,9 +164,9 @@ result = tools.request(
 )
 ```
 
-## Decision Lifecycle (v0.4.0)
+## 决策生命周期 (v0.4.0)
 
-Computed lifecycle with blocking reasons and timeline:
+计算出的生命周期，包含阻止原因和时间线：
 
 ```python
 from nexus_control import compute_lifecycle
@@ -182,9 +182,9 @@ for entry in lifecycle.timeline:
     print(f"  {entry.seq}  {entry.label}")
 ```
 
-## Export/Import Bundles (v0.5.0)
+## 导出/导入包 (v0.5.0)
 
-Portable, integrity-verified decision bundles:
+可移植且具有完整性验证的决策包：
 
 ```python
 # Export
@@ -199,13 +199,13 @@ import_result = tools.import_bundle(
 )
 ```
 
-Conflict modes: `reject_on_conflict`, `new_decision_id`, `overwrite`
+冲突模式：`reject_on_conflict`、`new_decision_id`、`overwrite`
 
-## Data Model
+## 数据模型
 
-### Event-Sourced Design
+### 事件溯源设计
 
-All state is derived by replaying an immutable event log:
+所有状态都是通过重放不可变的事件日志派生出来的：
 
 ```
 decisions (header)
@@ -220,7 +220,7 @@ decisions (header)
         └── EXECUTION_FAILED
 ```
 
-### Policy Model
+### 策略模型
 
 ```python
 Policy(
@@ -232,14 +232,14 @@ Policy(
 )
 ```
 
-### Approval Model
+### 审批模型
 
-- Counted by distinct `actor.id`
-- Can include `comment` and optional `expires_at`
-- Can be revoked (before execution)
-- Execution requires approvals to satisfy policy **at execution time**
+- 由不同的 `actor.id` 计数
+- 可以包含 `comment` 和可选的 `expires_at`
+- 可以撤销（在执行之前）
+- 执行需要审批才能满足策略，**在执行时**
 
-## Development
+## 开发
 
 ```bash
 # Install dev dependencies
@@ -255,7 +255,7 @@ pyright
 ruff check .
 ```
 
-## Project Structure
+## 项目结构
 
 ```
 nexus-control/
@@ -283,7 +283,7 @@ nexus-control/
 └── pyproject.toml
 ```
 
-## License
+## 许可证
 
 MIT
 

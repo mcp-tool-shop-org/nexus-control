@@ -12,9 +12,9 @@
 
 <p align="center">
   <a href="https://github.com/mcp-tool-shop-org/nexus-control/actions/workflows/ci.yml"><img src="https://github.com/mcp-tool-shop-org/nexus-control/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://codecov.io/gh/mcp-tool-shop-org/nexus-control"><img src="https://codecov.io/gh/mcp-tool-shop-org/nexus-control/branch/main/graph/badge.svg" alt="Codecov" /></a>
   <a href="https://pypi.org/project/nexus-control/"><img src="https://img.shields.io/pypi/v/nexus-control" alt="PyPI" /></a>
-  <a href="https://github.com/mcp-tool-shop-org/nexus-control/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mcp-tool-shop-org/nexus-control" alt="License: MIT" /></a>
-  <a href="https://pypi.org/project/nexus-control/"><img src="https://img.shields.io/pypi/pyversions/nexus-control" alt="Python versions" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
   <a href="https://mcp-tool-shop-org.github.io/nexus-control/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page" /></a>
 </p>
 
@@ -283,12 +283,31 @@ nexus-control/
 └── pyproject.toml
 ```
 
+## Security & Data Scope
+
+- **Data touched:** in-memory approval policies, execution audit logs (SHA-256 integrity), tool call metadata. All data is ephemeral unless explicitly exported.
+- **Data NOT touched:** no network requests beyond nexus-router communication, no filesystem writes (audit exports go to caller-specified paths), no OS credentials, no telemetry.
+- **Permissions required:** none beyond Python process permissions.
+
+See [SECURITY.md](SECURITY.md) for vulnerability reporting.
+
+## Scorecard
+
+| Category | Score |
+|----------|-------|
+| A. Security | 10/10 |
+| B. Error Handling | 10/10 |
+| C. Operator Docs | 10/10 |
+| D. Shipping Hygiene | 10/10 |
+| E. Identity (soft) | 10/10 |
+| **Overall** | **50/50** |
+
+> Assessed with [`@mcptoolshop/shipcheck`](https://github.com/mcp-tool-shop-org/shipcheck)
+
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE) for details.
 
 ---
 
-<p align="center">
-  Built by <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
-</p>
+Built by [MCP Tool Shop](https://mcp-tool-shop.github.io/)

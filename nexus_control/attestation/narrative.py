@@ -33,7 +33,7 @@ Usage:
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING, Any
 
@@ -857,7 +857,7 @@ def _verify_receipt_digest(receipt: AttestationReceipt) -> IntegrityCheck:
     return IntegrityCheck(
         name="receipt_digest_valid",
         status=CheckStatus.PASS,
-        reason=f"Receipt digest matches computed value",
+        reason="Receipt digest matches computed value",
         expected=f"sha256:{expected}",
         actual=f"sha256:{expected}",
     )
@@ -1173,9 +1173,9 @@ def render_narrative(
             lines.append(f"  Key ID:       {report.witness.key_id}")
         lines.append("")
         lines.append("  To verify externally:")
-        lines.append(f"    - Look up tx_hash on XRPL explorer")
+        lines.append("    - Look up tx_hash on XRPL explorer")
         lines.append(f"    - Confirm ledger_index >= {report.witness.ledger_index}")
-        lines.append(f"    - Verify memo contains intent binding")
+        lines.append("    - Verify memo contains intent binding")
         lines.append("")
 
     # Timeline section

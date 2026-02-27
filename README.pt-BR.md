@@ -12,9 +12,9 @@
 
 <p align="center">
   <a href="https://github.com/mcp-tool-shop-org/nexus-control/actions/workflows/ci.yml"><img src="https://github.com/mcp-tool-shop-org/nexus-control/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://codecov.io/gh/mcp-tool-shop-org/nexus-control"><img src="https://codecov.io/gh/mcp-tool-shop-org/nexus-control/branch/main/graph/badge.svg" alt="Codecov" /></a>
   <a href="https://pypi.org/project/nexus-control/"><img src="https://img.shields.io/pypi/v/nexus-control" alt="PyPI" /></a>
-  <a href="https://github.com/mcp-tool-shop-org/nexus-control/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mcp-tool-shop-org/nexus-control" alt="License: MIT" /></a>
-  <a href="https://pypi.org/project/nexus-control/"><img src="https://img.shields.io/pypi/pyversions/nexus-control" alt="Python versions" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
   <a href="https://mcp-tool-shop-org.github.io/nexus-control/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page" /></a>
 </p>
 
@@ -22,12 +22,12 @@
 
 
 
-Um plano de controle fino que transforma "o roteador pode executar" em "a organização pode decidir com segurança executar" — com prova criptográfica.
+Um plano de controle leve que transforma "o roteador pode executar" em "a organização pode decidir com segurança executar" — com prova criptográfica.
 
-## Identificador da Marca + da Ferramenta
+## Marca + ID da Ferramenta
 
 | Chave | Valor |
-| ----- | ------- |
+|-----|-------|
 | Marca / repositório | `nexus-control` |
 | Pacote Python | `nexus_control` |
 | Autor | [mcp-tool-shop](https://github.com/mcp-tool-shop) |
@@ -36,15 +36,15 @@ Um plano de controle fino que transforma "o roteador pode executar" em "a organi
 ## Promessa Fundamental
 
 Cada execução está vinculada a:
-- Uma **decisão** (o pedido + a política)
+- Uma **decisão** (o pedido + política)
 - Uma **política** (regras de aprovação, modos permitidos, restrições)
 - Um **registro de aprovações** (quem aprovou, quando, com qual comentário)
-- Um **ID de execução do nexus-router** (para auditoria completa da execução)
+- Um `run_id` do `nexus-router` (para auditoria completa da execução)
 - Um **pacote de auditoria** (vinculação criptográfica da governança à execução)
 
 Tudo é exportável, verificável e reproduzível.
 
-> Consulte [ARCHITECTURE.md](ARCHITECTURE.md) para obter o modelo mental completo e as garantias de design.
+> Consulte [ARCHITECTURE.md](ARCHITECTURE.md) para o modelo mental completo e as garantias de design.
 
 ## Instalação
 
@@ -100,18 +100,18 @@ print(audit.data["digest"])  # sha256:...
 ## Ferramentas MCP
 
 | Ferramenta | Descrição |
-| ------ | ------------- |
+|------|-------------|
 | `nexus-control.request` | Crie um pedido de execução com objetivo, política e aprovadores. |
 | `nexus-control.approve` | Aprove um pedido (suporta aprovações N-de-M). |
-| `nexus-control.execute` | Execute o pedido aprovado via nexus-router. |
-| `nexus-control.status` | Obtenha o status do pedido e o status da execução vinculada. |
+| `nexus-control.execute` | Execute o pedido aprovado via `nexus-router`. |
+| `nexus-control.status` | Obtenha o estado do pedido e o status da execução vinculada. |
 | `nexus-control.inspect` | Inspeção somente leitura com saída legível por humanos. |
 | `nexus-control.template.create` | Crie um modelo de política nomeado e imutável. |
 | `nexus-control.template.get` | Recupere um modelo por nome. |
-| `nexus-control.template.list` | Liste todos os modelos com filtragem opcional por etiqueta. |
+| `nexus-control.template.list` | Liste todos os modelos com filtragem opcional por rótulo. |
 | `nexus-control.export_bundle` | Exporte uma decisão como um pacote portátil e com integridade verificada. |
 | `nexus-control.import_bundle` | Importe um pacote com modos de conflito e validação de reprodução. |
-| `nexus-control.export_audit_package` | Exporte o pacote de auditoria, vinculando a governança à execução. |
+| `nexus-control.export_audit_package` | Exporte o pacote de auditoria vinculando a governança à execução. |
 
 ## Pacotes de Auditoria (v0.6.0)
 
@@ -120,7 +120,7 @@ Um único artefato JSON que vincula criptograficamente:
 - **O que realmente foi executado** (execução do roteador)
 - **Por que foi permitido** (link entre o controle e o roteador)
 
-Em um único "binding_digest" verificável.
+Em um único `binding_digest` verificável.
 
 ```python
 from nexus_control import export_audit_package, verify_audit_package
@@ -137,7 +137,7 @@ assert verification.ok
 Dois modos de roteador:
 
 | Modo | Descrição | Caso de Uso |
-| ------ | ------------- | ---------- |
+|------|-------------|----------|
 | **Reference** | `run_id` + `router_digest` | CI, sistemas internos |
 | **Embedded** | Pacote completo do roteador incluído | Reguladores, arquivamento de longo prazo |
 
@@ -283,12 +283,31 @@ nexus-control/
 └── pyproject.toml
 ```
 
+## Segurança e Escopo de Dados
+
+- **Dados acessados:** políticas de aprovação em memória, logs de auditoria de execução (integridade SHA-256), metadados de chamadas de ferramentas. Todos os dados são efêmeros, a menos que explicitamente exportados.
+- **Dados NÃO acessados:** nenhuma solicitação de rede além da comunicação `nexus-router`, nenhuma escrita no sistema de arquivos (as exportações de auditoria vão para os caminhos especificados pelo chamador), nenhuma credencial do SO, nenhuma telemetria.
+- **Permissões necessárias:** apenas as permissões do processo Python.
+
+Consulte [SECURITY.md](SECURITY.md) para relatar vulnerabilidades.
+
+## Tabela de Avaliação
+
+| Categoria | Pontuação |
+|----------|-------|
+| A. Segurança | 10/10 |
+| B. Tratamento de Erros | 10/10 |
+| C. Documentação para Operadores | 10/10 |
+| D. Higiene no Transporte | 10/10 |
+| E. Identidade (suave) | 10/10 |
+| **Overall** | **50/50** |
+
+> Avaliado com [`@mcptoolshop/shipcheck`](https://github.com/mcp-tool-shop-org/shipcheck)
+
 ## Licença
 
-MIT
+Licença MIT — veja [LICENSE](LICENSE) para detalhes.
 
 ---
 
-<p align="center">
-  Built by <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
-</p>
+Desenvolvido por [MCP Tool Shop](https://mcp-tool-shop.github.io/)

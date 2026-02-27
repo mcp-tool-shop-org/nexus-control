@@ -12,9 +12,9 @@
 
 <p align="center">
   <a href="https://github.com/mcp-tool-shop-org/nexus-control/actions/workflows/ci.yml"><img src="https://github.com/mcp-tool-shop-org/nexus-control/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://codecov.io/gh/mcp-tool-shop-org/nexus-control"><img src="https://codecov.io/gh/mcp-tool-shop-org/nexus-control/branch/main/graph/badge.svg" alt="Codecov" /></a>
   <a href="https://pypi.org/project/nexus-control/"><img src="https://img.shields.io/pypi/v/nexus-control" alt="PyPI" /></a>
-  <a href="https://github.com/mcp-tool-shop-org/nexus-control/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mcp-tool-shop-org/nexus-control" alt="License: MIT" /></a>
-  <a href="https://pypi.org/project/nexus-control/"><img src="https://img.shields.io/pypi/pyversions/nexus-control" alt="Python versions" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
   <a href="https://mcp-tool-shop-org.github.io/nexus-control/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page" /></a>
 </p>
 
@@ -22,12 +22,12 @@
 
 
 
-Un plano de control delgado que transforma "el enrutador puede ejecutar" en "la organización puede decidir de forma segura ejecutar", con una prueba criptográfica.
+Un plano de control ligero que transforma "el enrutador puede ejecutar" en "la organización puede decidir de forma segura ejecutar" con una prueba criptográfica.
 
 ## Marca + ID de la herramienta
 
 | Clave | Valor |
-| ----- | ------- |
+|-----|-------|
 | Marca / repositorio | `nexus-control` |
 | Paquete de Python | `nexus_control` |
 | Autor | [mcp-tool-shop](https://github.com/mcp-tool-shop) |
@@ -39,7 +39,7 @@ Cada ejecución está vinculada a:
 - Una **decisión** (la solicitud + la política)
 - Una **política** (reglas de aprobación, modos permitidos, restricciones)
 - Un **registro de aprobación** (quién aprobó, cuándo, con qué comentario)
-- Un **ID de ejecución de nexus-router** (para una auditoría completa de la ejecución)
+- Un `run_id` de **nexus-router** (para una auditoría completa de la ejecución)
 - Un **paquete de auditoría** (vinculación criptográfica de la gobernanza a la ejecución)
 
 Todo es exportable, verificable y reproducible.
@@ -59,7 +59,7 @@ cd nexus-control
 pip install -e ".[dev]"
 ```
 
-## Comienzo rápido
+## Guía de inicio rápido
 
 ```python
 from nexus_control import NexusControlTools
@@ -100,18 +100,18 @@ print(audit.data["digest"])  # sha256:...
 ## Herramientas MCP
 
 | Herramienta | Descripción |
-| ------ | ------------- |
-| `nexus-control.request` | Crear una solicitud de ejecución con el objetivo, la política y los aprobadores. |
-| `nexus-control.approve` | Aprobar una solicitud (admite aprobaciones N de M). |
-| `nexus-control.execute` | Ejecutar la solicitud aprobada a través de nexus-router. |
-| `nexus-control.status` | Obtener el estado de la solicitud y el estado de la ejecución vinculada. |
-| `nexus-control.inspect` | Introspección de solo lectura con salida legible por humanos. |
-| `nexus-control.template.create` | Crear una plantilla de política con nombre e inmutable. |
-| `nexus-control.template.get` | Recuperar una plantilla por nombre. |
-| `nexus-control.template.list` | Listar todas las plantillas con filtrado opcional por etiqueta. |
-| `nexus-control.export_bundle` | Exportar una decisión como un paquete portátil y con integridad verificada. |
-| `nexus-control.import_bundle` | Importar un paquete con modos de conflicto y validación de reproducción. |
-| `nexus-control.export_audit_package` | Exportar el paquete de auditoría que vincula la gobernanza a la ejecución. |
+|------|-------------|
+| `nexus-control.request` | Crea una solicitud de ejecución con objetivo, política y aprobadores. |
+| `nexus-control.approve` | Aprueba una solicitud (admite aprobaciones N de M). |
+| `nexus-control.execute` | Ejecuta la solicitud aprobada a través de nexus-router. |
+| `nexus-control.status` | Obtén el estado de la solicitud y el estado de la ejecución vinculada. |
+| `nexus-control.inspect` | Inspección de solo lectura con salida legible por humanos. |
+| `nexus-control.template.create` | Crea una plantilla de política con nombre e inmutable. |
+| `nexus-control.template.get` | Recupera una plantilla por nombre. |
+| `nexus-control.template.list` | Lista todas las plantillas con filtrado opcional por etiqueta. |
+| `nexus-control.export_bundle` | Exporta una decisión como un paquete portátil y con integridad verificada. |
+| `nexus-control.import_bundle` | Importa un paquete con modos de conflicto y validación de reproducción. |
+| `nexus-control.export_audit_package` | Exporta el paquete de auditoría que vincula la gobernanza a la ejecución. |
 
 ## Paquetes de auditoría (v0.6.0)
 
@@ -120,7 +120,7 @@ Un único artefacto JSON que vincula criptográficamente:
 - **Lo que realmente se ejecutó** (ejecución del enrutador)
 - **Por qué se permitió** (enlace de control-enrutador)
 
-En un único "binding_digest" verificable.
+En un único `binding_digest` verificable.
 
 ```python
 from nexus_control import export_audit_package, verify_audit_package
@@ -137,9 +137,9 @@ assert verification.ok
 Dos modos de enrutador:
 
 | Modo | Descripción | Caso de uso |
-| ------ | ------------- | ---------- |
+|------|-------------|----------|
 | **Reference** | `run_id` + `router_digest` | CI, sistemas internos |
-| **Embedded** | Paquete de enrutador completo incluido | Reguladores, archivado a largo plazo |
+| **Embedded** | Paquete de enrutador completo incluido | Reguladores, archivo a largo plazo |
 
 ## Plantillas de decisión (v0.3.0)
 
@@ -220,7 +220,7 @@ decisions (header)
         └── EXECUTION_FAILED
 ```
 
-### Modelo de política
+### Modelo de políticas
 
 ```python
 Policy(
@@ -235,7 +235,7 @@ Policy(
 ### Modelo de aprobación
 
 - Contado por `actor.id` distintos.
-- Puede incluir un `comentario` y un `expires_at` opcional.
+- Puede incluir `comment` y `expires_at` opcional.
 - Se puede revocar (antes de la ejecución).
 - La ejecución requiere aprobaciones para satisfacer la política **en el momento de la ejecución**.
 
@@ -283,12 +283,31 @@ nexus-control/
 └── pyproject.toml
 ```
 
+## Seguridad y alcance de los datos
+
+- **Datos a los que se accede:** políticas de aprobación en memoria, registros de auditoría de ejecución (integridad SHA-256), metadatos de llamadas a herramientas. Todos los datos son efímeros a menos que se exporten explícitamente.
+- **Datos a los que NO se accede:** no hay solicitudes de red más allá de la comunicación de nexus-router, no hay escrituras en el sistema de archivos (las exportaciones de auditoría se dirigen a las rutas especificadas por el llamador), no hay credenciales del sistema operativo, no hay telemetría.
+- **Permisos requeridos:** ninguno más allá de los permisos del proceso de Python.
+
+Consulte [SECURITY.md](SECURITY.md) para informar sobre vulnerabilidades.
+
+## Tabla de evaluación
+
+| Categoría | Puntuación |
+|----------|-------|
+| A. Seguridad | 10/10 |
+| B. Manejo de errores | 10/10 |
+| C. Documentación para el operador | 10/10 |
+| D. Higiene durante el envío | 10/10 |
+| E. Identificación (suave) | 10/10 |
+| **Overall** | **50/50** |
+
+> Evaluado con [`@mcptoolshop/shipcheck`](https://github.com/mcp-tool-shop-org/shipcheck)
+
 ## Licencia
 
-MIT
+Licencia MIT: consulte [LICENSE](LICENSE) para obtener más detalles.
 
 ---
 
-<p align="center">
-  Built by <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
-</p>
+Desarrollado por [MCP Tool Shop](https://mcp-tool-shop.github.io/)

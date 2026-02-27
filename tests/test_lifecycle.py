@@ -13,7 +13,6 @@ from nexus_control.decision import Decision
 from nexus_control.events import Actor, EventType
 from nexus_control.lifecycle import (
     BlockingReason,
-    Lifecycle,
     LifecycleEntry,
     LifecycleProgress,
     compute_blocking_reasons,
@@ -226,7 +225,7 @@ class TestTimeline:
         decision = Decision.load(self.store, result.data["request_id"])
         timeline = compute_timeline(decision)
 
-        approval_entry = [e for e in timeline if e.label == "approved"][0]
+        approval_entry = next(e for e in timeline if e.label == "approved")
         assert approval_entry.category == "approval"
         assert "alice" in approval_entry.summary
         assert "LGTM" in approval_entry.summary
@@ -248,7 +247,7 @@ class TestTimeline:
         decision = Decision.load(self.store, result.data["request_id"])
         timeline = compute_timeline(decision)
 
-        revoke_entry = [e for e in timeline if e.label == "revoked"][0]
+        revoke_entry = next(e for e in timeline if e.label == "revoked")
         assert revoke_entry.category == "approval"
         assert "Changed my mind" in revoke_entry.summary
         assert revoke_entry.actor == "alice"
@@ -370,7 +369,7 @@ class TestTimeline:
         decision = Decision.load(self.store, result.data["request_id"])
         timeline = compute_timeline(decision)
 
-        policy_entry = [e for e in timeline if e.category == "policy"][0]
+        policy_entry = next(e for e in timeline if e.category == "policy")
         assert "test-template" in policy_entry.summary
 
 
@@ -574,7 +573,7 @@ class TestBlockingReasonModel:
             details={},
         )
 
-        with pytest.raises(Exception):  # FrozenInstanceError
+        with pytest.raises(AttributeError):
             reason.code = "OTHER"  # type: ignore
 
     def test_blocking_reason_to_dict(self):
@@ -622,7 +621,7 @@ class TestLifecycleEntryModel:
             seq=0,
         )
 
-        with pytest.raises(Exception):
+        with pytest.raises(AttributeError):
             entry.label = "modified"  # type: ignore
 
     def test_lifecycle_entry_to_dict(self):

@@ -12,9 +12,7 @@ Test plan:
 - Get status: returns current state, None for unknown
 """
 
-import json
 
-import pytest
 
 from nexus_control.attestation.intent import AttestationIntent
 from nexus_control.attestation.queue import AttestationQueue, QueuedIntent

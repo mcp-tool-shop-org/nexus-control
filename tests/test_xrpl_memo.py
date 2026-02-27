@@ -13,8 +13,6 @@ Test plan:
 
 import json
 
-import pytest
-
 from nexus_control.attestation.intent import AttestationIntent
 from nexus_control.attestation.xrpl.memo import (
     MAX_MEMO_BYTES,
@@ -237,7 +235,7 @@ class TestMemoConstants:
         assert MEMO_TYPE == "nexus.attest"
 
     def test_memo_type_hex(self) -> None:
-        assert MEMO_TYPE_HEX == MEMO_TYPE.encode("utf-8").hex()
+        assert MEMO_TYPE.encode("utf-8").hex() == MEMO_TYPE_HEX
 
     def test_memo_version(self) -> None:
         assert MEMO_VERSION == "0.1"

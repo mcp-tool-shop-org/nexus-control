@@ -3,7 +3,7 @@
 import pytest
 
 from nexus_control.events import Actor
-from nexus_control.template import Template, TemplateStore
+from nexus_control.template import Template
 from nexus_control.tool import NexusControlTools
 
 

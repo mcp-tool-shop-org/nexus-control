@@ -25,7 +25,6 @@ from nexus_control.attestation.receipt import (
 from nexus_control.attestation.xrpl.client import SubmitResult, TxStatusResult
 from nexus_control.attestation.xrpl.signer import SignResult
 
-
 # ---------------------------------------------------------------------------
 # Fakes for testing
 # ---------------------------------------------------------------------------
@@ -348,7 +347,7 @@ class TestContextParameters:
         import nexus_control.attestation.flexiflow_adapter as adapter_module
 
         db_path = tmp_path / "test.db"  # type: ignore[operator]
-        queue = AttestationQueue(str(db_path))
+        AttestationQueue(str(db_path))
 
         captured_kwargs: dict = {}
 

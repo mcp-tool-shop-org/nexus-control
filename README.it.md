@@ -12,9 +12,9 @@
 
 <p align="center">
   <a href="https://github.com/mcp-tool-shop-org/nexus-control/actions/workflows/ci.yml"><img src="https://github.com/mcp-tool-shop-org/nexus-control/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://codecov.io/gh/mcp-tool-shop-org/nexus-control"><img src="https://codecov.io/gh/mcp-tool-shop-org/nexus-control/branch/main/graph/badge.svg" alt="Codecov" /></a>
   <a href="https://pypi.org/project/nexus-control/"><img src="https://img.shields.io/pypi/v/nexus-control" alt="PyPI" /></a>
-  <a href="https://github.com/mcp-tool-shop-org/nexus-control/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mcp-tool-shop-org/nexus-control" alt="License: MIT" /></a>
-  <a href="https://pypi.org/project/nexus-control/"><img src="https://img.shields.io/pypi/pyversions/nexus-control" alt="Python versions" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
   <a href="https://mcp-tool-shop-org.github.io/nexus-control/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page" /></a>
 </p>
 
@@ -24,11 +24,11 @@
 
 Un livello di controllo sottile che trasforma "il router può eseguire" in "l'organizzazione può decidere in sicurezza di eseguire" – con una prova crittografica.
 
-## ID del marchio + ID dello strumento
+## Marca + ID dello strumento
 
 | Chiave | Valore |
-| ----- | ------- |
-| Marchio / repository | `nexus-control` |
+|-----|-------|
+| Marca / repository | `nexus-control` |
 | Pacchetto Python | `nexus_control` |
 | Autore | [mcp-tool-shop](https://github.com/mcp-tool-shop) |
 | Licenza | MIT |
@@ -39,8 +39,8 @@ Ogni esecuzione è collegata a:
 - Una **decisione** (la richiesta + la policy)
 - Una **policy** (regole di approvazione, modalità consentite, vincoli)
 - Una **traccia di approvazione** (chi ha approvato, quando, con quale commento)
-- Un **ID di esecuzione di nexus-router** (per l'audit completo dell'esecuzione)
-- Un **pacchetto di audit** (associazione crittografica tra governance ed esecuzione)
+- Un **ID di esecuzione del router nexus** (per l'audit completo dell'esecuzione)
+- Un **pacchetto di audit** (associazione crittografica della governance all'esecuzione)
 
 Tutto è esportabile, verificabile e riproducibile.
 
@@ -100,16 +100,16 @@ print(audit.data["digest"])  # sha256:...
 ## Strumenti MCP
 
 | Strumento | Descrizione |
-| ------ | ------------- |
+|------|-------------|
 | `nexus-control.request` | Crea una richiesta di esecuzione con obiettivo, policy e approvatori |
-| `nexus-control.approve` | Approva una richiesta (supporta le approvazioni N-of-M) |
-| `nexus-control.execute` | Esegui la richiesta approvata tramite nexus-router |
+| `nexus-control.approve` | Approva una richiesta (supporta le approvazioni N-di-M) |
+| `nexus-control.execute` | Esegui la richiesta approvata tramite il router nexus |
 | `nexus-control.status` | Ottieni lo stato della richiesta e lo stato dell'esecuzione collegata |
 | `nexus-control.inspect` | Introspezione in sola lettura con output leggibile |
 | `nexus-control.template.create` | Crea un modello di policy denominato e immutabile |
 | `nexus-control.template.get` | Recupera un modello per nome |
 | `nexus-control.template.list` | Elenca tutti i modelli con filtraggio opzionale per etichetta |
-| `nexus-control.export_bundle` | Esporta una decisione come un pacchetto portatile con verifica dell'integrità |
+| `nexus-control.export_bundle` | Esporta una decisione come un pacchetto portatile e con verifica dell'integrità |
 | `nexus-control.import_bundle` | Importa un pacchetto con modalità di conflitto e convalida della riproduzione |
 | `nexus-control.export_audit_package` | Esporta il pacchetto di audit che associa la governance all'esecuzione |
 
@@ -137,9 +137,9 @@ assert verification.ok
 Due modalità del router:
 
 | Modalità | Descrizione | Caso d'uso |
-| ------ | ------------- | ---------- |
+|------|-------------|----------|
 | **Reference** | `run_id` + `router_digest` | CI, sistemi interni |
-| **Embedded** | Pacchetto completo del router incluso | Regolatori, archiviazione a lungo termine |
+| **Embedded** | Pacchetto del router completo incluso | Regolatori, archiviazione a lungo termine |
 
 ## Modelli di decisione (v0.3.0)
 
@@ -164,7 +164,7 @@ result = tools.request(
 )
 ```
 
-## Ciclo di vita delle decisioni (v0.4.0)
+## Ciclo di vita della decisione (v0.4.0)
 
 Ciclo di vita calcolato con motivi di blocco e timeline:
 
@@ -184,7 +184,7 @@ for entry in lifecycle.timeline:
 
 ## Esportazione/Importazione di pacchetti (v0.5.0)
 
-Pacchetti di decisione portabili con verifica dell'integrità:
+Pacchetti di decisione portabili e con verifica dell'integrità:
 
 ```python
 # Export
@@ -220,7 +220,7 @@ decisions (header)
         └── EXECUTION_FAILED
 ```
 
-### Modello delle policy
+### Modello della policy
 
 ```python
 Policy(
@@ -232,7 +232,7 @@ Policy(
 )
 ```
 
-### Modello delle approvazioni
+### Modello di approvazione
 
 - Contato per `actor.id` distinti
 - Può includere `comment` e `expires_at` opzionale
@@ -283,12 +283,31 @@ nexus-control/
 └── pyproject.toml
 ```
 
+## Sicurezza e ambito dei dati
+
+- **Dati a cui si accede:** policy di approvazione in memoria, log di audit delle esecuzioni (integrità SHA-256), metadati delle chiamate agli strumenti. Tutti i dati sono effimeri a meno che non siano esplicitamente esportati.
+- **Dati a cui NON si accede:** nessuna richiesta di rete oltre alla comunicazione con il router nexus, nessuna scrittura sul file system (le esportazioni di audit vengono inviate ai percorsi specificati dal chiamante), nessuna credenziale del sistema operativo, nessuna telemetria.
+- **Permessi richiesti:** nessuno oltre ai permessi del processo Python.
+
+Consultare [SECURITY.md](SECURITY.md) per la segnalazione di vulnerabilità.
+
+## Tabella di valutazione
+
+| Categoria | Punteggio |
+|----------|-------|
+| A. Sicurezza | 10/10 |
+| B. Gestione degli errori | 10/10 |
+| C. Documentazione per gli operatori | 10/10 |
+| D. Igiene durante la spedizione | 10/10 |
+| E. Identità (soft) | 10/10 |
+| **Overall** | **50/50** |
+
+> Valutato con [`@mcptoolshop/shipcheck`](https://github.com/mcp-tool-shop-org/shipcheck)
+
 ## Licenza
 
-MIT
+Licenza MIT — vedere [LICENSE](LICENSE) per i dettagli.
 
 ---
 
-<p align="center">
-  Built by <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
-</p>
+Creato da [MCP Tool Shop](https://mcp-tool-shop.github.io/)

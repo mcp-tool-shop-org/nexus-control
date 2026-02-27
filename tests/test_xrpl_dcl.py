@@ -22,7 +22,6 @@ from nexus_control.attestation.xrpl.transport import DclTransport, ExchangeRecor
 from nexus_control.canonical_json import canonical_json_bytes
 from nexus_control.integrity import sha256_digest
 
-
 # ---------------------------------------------------------------------------
 # Fake HTTP client for DclTransport tests
 # ---------------------------------------------------------------------------

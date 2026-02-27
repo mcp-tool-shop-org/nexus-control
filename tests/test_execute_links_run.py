@@ -1,11 +1,9 @@
 """Tests for execute tool and router integration."""
 
-import pytest
 from typing import Any
-from unittest.mock import MagicMock
 
 from nexus_control.events import Actor
-from nexus_control.tool import NexusControlTools, RouterProtocol
+from nexus_control.tool import NexusControlTools
 
 
 class MockRouter:

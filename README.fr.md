@@ -12,9 +12,9 @@
 
 <p align="center">
   <a href="https://github.com/mcp-tool-shop-org/nexus-control/actions/workflows/ci.yml"><img src="https://github.com/mcp-tool-shop-org/nexus-control/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://codecov.io/gh/mcp-tool-shop-org/nexus-control"><img src="https://codecov.io/gh/mcp-tool-shop-org/nexus-control/branch/main/graph/badge.svg" alt="Codecov" /></a>
   <a href="https://pypi.org/project/nexus-control/"><img src="https://img.shields.io/pypi/v/nexus-control" alt="PyPI" /></a>
-  <a href="https://github.com/mcp-tool-shop-org/nexus-control/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mcp-tool-shop-org/nexus-control" alt="License: MIT" /></a>
-  <a href="https://pypi.org/project/nexus-control/"><img src="https://img.shields.io/pypi/pyversions/nexus-control" alt="Python versions" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
   <a href="https://mcp-tool-shop-org.github.io/nexus-control/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page" /></a>
 </p>
 
@@ -27,7 +27,7 @@ Un plan de contrôle minimal qui transforme "le routeur peut exécuter" en "l'or
 ## Identifiant de la marque + de l'outil
 
 | Clé | Valeur |
-| ----- | ------- |
+|-----|-------|
 | Marque / dépôt | `nexus-control` |
 | Paquet Python | `nexus_control` |
 | Auteur | [mcp-tool-shop](https://github.com/mcp-tool-shop) |
@@ -39,7 +39,7 @@ Chaque exécution est liée à :
 - Une **décision** (la requête + la politique)
 - Une **politique** (règles d'approbation, modes autorisés, contraintes)
 - Une **traçabilité des approbations** (qui a approuvé, quand, avec quel commentaire)
-- Un **identifiant d'exécution du routeur nexus** (pour un audit complet de l'exécution)
+- Un **identifiant d'exécution `run_id` du routeur nexus** (pour un audit complet de l'exécution)
 - Un **paquet d'audit** (liaison cryptographique de la gouvernance à l'exécution)
 
 Tout est exportable, vérifiable et reproductible.
@@ -100,23 +100,23 @@ print(audit.data["digest"])  # sha256:...
 ## Outils MCP
 
 | Outil | Description |
-| ------ | ------------- |
-| `nexus-control.request` | Créer une demande d'exécution avec un objectif, une politique et des approbateurs. |
-| `nexus-control.approve` | Approuver une demande (prend en charge les approbations N-sur-M). |
-| `nexus-control.execute` | Exécuter la demande approuvée via le routeur nexus. |
-| `nexus-control.status` | Obtenir l'état de la demande et le statut de l'exécution associée. |
+|------|-------------|
+| `nexus-control.request` | Créer une requête d'exécution avec un objectif, une politique et des approbateurs. |
+| `nexus-control.approve` | Approuver une requête (prend en charge les approbations N-sur-M). |
+| `nexus-control.execute` | Exécuter la requête approuvée via le routeur nexus. |
+| `nexus-control.status` | Obtenir l'état de la requête et le statut de l'exécution associée. |
 | `nexus-control.inspect` | Introspection en lecture seule avec une sortie lisible par l'homme. |
 | `nexus-control.template.create` | Créer un modèle de politique nommé et immuable. |
 | `nexus-control.template.get` | Récupérer un modèle par son nom. |
 | `nexus-control.template.list` | Lister tous les modèles avec un filtrage optionnel par étiquette. |
 | `nexus-control.export_bundle` | Exporter une décision sous forme de paquet portable et vérifié. |
-| `nexus-control.import_bundle` | Importer un paquet avec des modes de conflit et une validation de relecture. |
+| `nexus-control.import_bundle` | Importer un paquet avec gestion des conflits et validation de la reproduction. |
 | `nexus-control.export_audit_package` | Exporter le paquet d'audit reliant la gouvernance à l'exécution. |
 
 ## Paquets d'audit (v0.6.0)
 
 Un seul artefact JSON qui lie cryptographiquement :
-- **Ce qui a été autorisé** (paquet de contrôle)
+- **Ce qui était autorisé** (paquet de contrôle)
 - **Ce qui a réellement été exécuté** (exécution du routeur)
 - **Pourquoi cela a été autorisé** (lien entre le contrôle et le routeur)
 
@@ -137,7 +137,7 @@ assert verification.ok
 Deux modes de routeur :
 
 | Mode | Description | Cas d'utilisation |
-| ------ | ------------- | ---------- |
+|------|-------------|----------|
 | **Reference** | `run_id` + `router_digest` | CI, systèmes internes |
 | **Embedded** | Paquet de routeur complet inclus | Organismes de réglementation, archivage à long terme |
 
@@ -164,9 +164,9 @@ result = tools.request(
 )
 ```
 
-## Cycle de vie de la décision (v0.4.0)
+## Cycle de vie des décisions (v0.4.0)
 
-Cycle de vie calculé avec des raisons de blocage et une chronologie :
+Cycle de vie calculé avec les raisons de blocage et la chronologie :
 
 ```python
 from nexus_control import compute_lifecycle
@@ -184,7 +184,7 @@ for entry in lifecycle.timeline:
 
 ## Exportation/Importation de paquets (v0.5.0)
 
-Paquets de décision portables et vérifiés :
+Paquets de décisions portables et vérifiés :
 
 ```python
 # Export
@@ -283,12 +283,31 @@ nexus-control/
 └── pyproject.toml
 ```
 
+## Sécurité et portée des données
+
+- **Données traitées :** politiques d'approbation en mémoire, journaux d'audit d'exécution (intégrité SHA-256), métadonnées des appels d'outils. Toutes les données sont éphémères, sauf si elles sont explicitement exportées.
+- **Données NON traitées :** aucune requête réseau en dehors de la communication avec le routeur nexus, aucune écriture sur le système de fichiers (les exports d'audit sont envoyés aux chemins spécifiés par l'appelant), aucune identité de l'OS, aucune télémétrie.
+- **Autorisations requises :** aucune autre que les autorisations du processus Python.
+
+Consultez [SECURITY.md](SECURITY.md) pour signaler les vulnérabilités.
+
+## Tableau de bord
+
+| Catégorie | Score |
+|----------|-------|
+| A. Sécurité | 10/10 |
+| B. Gestion des erreurs | 10/10 |
+| C. Documentation pour les opérateurs | 10/10 |
+| D. Hygiène de l'expédition | 10/10 |
+| E. Identité (logiciel) | 10/10 |
+| **Overall** | **50/50** |
+
+> Évalué avec [`@mcptoolshop/shipcheck`](https://github.com/mcp-tool-shop-org/shipcheck)
+
 ## Licence
 
-MIT
+Licence MIT — voir [LICENSE](LICENSE) pour plus de détails.
 
 ---
 
-<p align="center">
-  Built by <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
-</p>
+Développé par [MCP Tool Shop](https://mcp-tool-shop.github.io/)

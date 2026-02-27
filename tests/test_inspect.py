@@ -1,6 +1,5 @@
 """Tests for inspect tool."""
 
-import pytest
 
 from nexus_control.events import Actor
 from nexus_control.tool import NexusControlTools

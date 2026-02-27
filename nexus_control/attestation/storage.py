@@ -21,13 +21,11 @@ Follows the same SQLite patterns as nexus_control.store:
 
 from __future__ import annotations
 
-import json
 import sqlite3
 from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
-
 
 _SCHEMA = """\
 CREATE TABLE IF NOT EXISTS attestation_intents (

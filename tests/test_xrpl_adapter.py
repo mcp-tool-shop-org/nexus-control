@@ -17,7 +17,6 @@ import pytest
 from nexus_control.attestation.intent import AttestationIntent
 from nexus_control.attestation.xrpl.adapter import AnchorPlan, plan
 from nexus_control.attestation.xrpl.memo import (
-    MAX_MEMO_BYTES,
     MEMO_TYPE_HEX,
     build_memo_payload,
     encode_memo_hex,

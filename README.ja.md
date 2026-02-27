@@ -12,9 +12,9 @@
 
 <p align="center">
   <a href="https://github.com/mcp-tool-shop-org/nexus-control/actions/workflows/ci.yml"><img src="https://github.com/mcp-tool-shop-org/nexus-control/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://codecov.io/gh/mcp-tool-shop-org/nexus-control"><img src="https://codecov.io/gh/mcp-tool-shop-org/nexus-control/branch/main/graph/badge.svg" alt="Codecov" /></a>
   <a href="https://pypi.org/project/nexus-control/"><img src="https://img.shields.io/pypi/v/nexus-control" alt="PyPI" /></a>
-  <a href="https://github.com/mcp-tool-shop-org/nexus-control/blob/main/LICENSE"><img src="https://img.shields.io/github/license/mcp-tool-shop-org/nexus-control" alt="License: MIT" /></a>
-  <a href="https://pypi.org/project/nexus-control/"><img src="https://img.shields.io/pypi/pyversions/nexus-control" alt="Python versions" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
   <a href="https://mcp-tool-shop-org.github.io/nexus-control/"><img src="https://img.shields.io/badge/Landing_Page-live-blue" alt="Landing Page" /></a>
 </p>
 
@@ -22,12 +22,12 @@
 
 
 
-薄い制御層により、「ルーターが実行できる」という状態を、「組織が安全に実行することを決定できる」という状態に変換します。暗号学的証明を使用します。
+薄い制御層により、「ルーターが実行できる」という状態を、「組織が安全に実行することを決定できる」という状態に変換します。その際、暗号化による証明を提供します。
 
 ## ブランド + ツールID
 
 | キー | 値 |
-| ----- | ------- |
+|-----|-------|
 | ブランド / リポジトリ | `nexus-control` |
 | Pythonパッケージ | `nexus_control` |
 | 作者 | [mcp-tool-shop](https://github.com/mcp-tool-shop) |
@@ -35,16 +35,16 @@
 
 ## 主要な約束
 
-すべての実行は以下のものと紐付けられます。
+すべての実行は以下のものと紐づいています。
 - **決定** (リクエスト + ポリシー)
 - **ポリシー** (承認ルール、許可されたモード、制約)
 - **承認履歴** (誰がいつ、どのようなコメントで承認したか)
 - **nexus-routerのrun_id** (完全な実行監査用)
 - **監査パッケージ** (ガバナンスと実行を暗号的に紐付けるもの)
 
-すべてをエクスポート、検証、および再実行できます。
+すべてをエクスポート、検証、そして再実行することができます。
 
-> アーキテクチャ全体の概念モデルと設計保証については、[ARCHITECTURE.md](ARCHITECTURE.md) を参照してください。
+> アーキテクチャの全体像と設計上の保証については、[ARCHITECTURE.md](ARCHITECTURE.md) を参照してください。
 
 ## インストール
 
@@ -52,7 +52,7 @@
 pip install nexus-control
 ```
 
-または、ソースコードから：
+または、ソースコードからインストール：
 ```bash
 git clone https://github.com/mcp-tool-shop-org/nexus-control
 cd nexus-control
@@ -100,17 +100,17 @@ print(audit.data["digest"])  # sha256:...
 ## MCPツール
 
 | ツール | 説明 |
-| ------ | ------------- |
-| `nexus-control.request` | 実行リクエストを作成します（目標、ポリシー、承認者を含む）。 |
+|------|-------------|
+| `nexus-control.request` | 目標、ポリシー、承認者を指定して、実行リクエストを作成します。 |
 | `nexus-control.approve` | リクエストを承認します（N-of-M承認をサポート）。 |
-| `nexus-control.execute` | nexus-router経由で承認されたリクエストを実行します。 |
-| `nexus-control.status` | リクエストの状態と関連する実行ステータスを取得します。 |
-| `nexus-control.inspect` | 読み取り専用のインスペクションを行い、人間が読める形式で出力します。 |
+| `nexus-control.execute` | nexus-routerを介して、承認されたリクエストを実行します。 |
+| `nexus-control.status` | リクエストの状態と関連する実行の状態を取得します。 |
+| `nexus-control.inspect` | 読み取り専用のインスペクションを行い、人間が読める形式で結果を表示します。 |
 | `nexus-control.template.create` | 名前付きで不変のポリシーテンプレートを作成します。 |
 | `nexus-control.template.get` | 名前でテンプレートを取得します。 |
 | `nexus-control.template.list` | オプションでラベルでフィルタリングして、すべてのテンプレートを一覧表示します。 |
 | `nexus-control.export_bundle` | 決定を、ポータブルで整合性が検証されたバンドルとしてエクスポートします。 |
-| `nexus-control.import_bundle` | 競合モードと再実行検証でバンドルをインポートします。 |
+| `nexus-control.import_bundle` | 競合モードと再実行検証を行い、バンドルをインポートします。 |
 | `nexus-control.export_audit_package` | ガバナンスと実行を紐付ける監査パッケージをエクスポートします。 |
 
 ## 監査パッケージ (v0.6.0)
@@ -120,7 +120,7 @@ print(audit.data["digest"])  # sha256:...
 - **実際に実行された内容** (ルーターの実行)
 - **許可された理由** (制御ルーターのリンク)
 
-これらを検証可能な `binding_digest` にまとめます。
+これらをまとめて、検証可能な `binding_digest` を作成します。
 
 ```python
 from nexus_control import export_audit_package, verify_audit_package
@@ -137,13 +137,13 @@ assert verification.ok
 ルーターのモード：
 
 | モード | 説明 | ユースケース |
-| ------ | ------------- | ---------- |
-| **Reference** | `run_id` + `router_digest` | CI、内部システム |
+|------|-------------|----------|
+| **Reference** | `run_id` + `router_digest` | CI、社内システム |
 | **Embedded** | 完全なルーターバンドルが含まれています | 規制当局、長期アーカイブ |
 
 ## 決定テンプレート (v0.3.0)
 
-決定間で再利用できる名前付きで不変のポリシーバンドルです。
+決定間で再利用できる、名前付きで不変のポリシーバンドルです。
 
 ```python
 tools.template_create(
@@ -164,9 +164,9 @@ result = tools.request(
 )
 ```
 
-## 決定ライフサイクル (v0.4.0)
+## 決定のライフサイクル (v0.4.0)
 
-ブロック理由とタイムラインを含む計算されたライフサイクルです。
+ブロック理由とタイムラインを含む、計算されたライフサイクルです。
 
 ```python
 from nexus_control import compute_lifecycle
@@ -203,7 +203,7 @@ import_result = tools.import_bundle(
 
 ## データモデル
 
-### イベントソーシング設計
+### イベントソーシングによる設計
 
 すべての状態は、不変のイベントログを再生することによって導出されます。
 
@@ -235,9 +235,9 @@ Policy(
 ### 承認モデル
 
 - 異なる `actor.id` でカウントされます。
-- `comment` とオプションの `expires_at` を含めることができます。
+- `comment` を含めることができ、オプションで `expires_at` を設定できます。
 - 実行前に取り消すことができます。
-- 実行には、ポリシーを満たすための承認が必要です（実行時）。
+- 実行には、ポリシーを満たす承認が必要です（**実行時に**）。
 
 ## 開発
 
@@ -255,7 +255,7 @@ pyright
 ruff check .
 ```
 
-## プロジェクト構造
+## プロジェクトの構成
 
 ```
 nexus-control/
@@ -283,12 +283,31 @@ nexus-control/
 └── pyproject.toml
 ```
 
+## セキュリティとデータ範囲
+
+- **アクセスされるデータ:** インメモリの承認ポリシー、実行監査ログ（SHA-256による整合性）、ツール呼び出しのメタデータ。すべてのデータは、明示的にエクスポートされない限り、一時的なものです。
+- **アクセスされないデータ:** nexus-routerとの通信以外のネットワークリクエストは行われません。ファイルシステムへの書き込みもありません（監査のエクスポートは、呼び出し元が指定したパスに保存されます）。OSの認証情報やテレメトリも使用しません。
+- **必要な権限:** Pythonプロセスに必要な権限のみです。
+
+脆弱性報告については、[SECURITY.md](SECURITY.md) を参照してください。
+
+## 評価項目
+
+| カテゴリ | スコア |
+|----------|-------|
+| A. セキュリティ | 10/10 |
+| B. エラー処理 | 10/10 |
+| C. 運用者向けドキュメント | 10/10 |
+| D. 輸送時の衛生管理 | 10/10 |
+| E. 身元確認（簡易版） | 10/10 |
+| **Overall** | **50/50** |
+
+> [`@mcptoolshop/shipcheck`](https://github.com/mcp-tool-shop-org/shipcheck) を使用して評価
+
 ## ライセンス
 
-MIT
+MITライセンス — 詳細については[LICENSE](LICENSE) を参照してください。
 
 ---
 
-<p align="center">
-  Built by <a href="https://mcp-tool-shop.github.io/">MCP Tool Shop</a>
-</p>
+[MCP Tool Shop](https://mcp-tool-shop.github.io/) が作成しました。

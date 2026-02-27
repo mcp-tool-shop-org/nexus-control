@@ -12,7 +12,6 @@ Test plan:
 - Import: re-exported from nexus_control.attestation
 """
 
-import copy
 
 import pytest
 

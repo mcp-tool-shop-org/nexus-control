@@ -40,7 +40,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
 from nexus_control.attestation.queue import AttestationQueue
-from nexus_control.attestation.receipt import AttestationReceipt, ReceiptStatus
+from nexus_control.attestation.receipt import ReceiptStatus
 
 if TYPE_CHECKING:
     from nexus_control.attestation.xrpl.exchange_store import ExchangeStore
@@ -317,7 +317,7 @@ def render_report(report: AttestationReport) -> str:
     lines.append(f"  Attempts:     {report.total_attempts}")
 
     if report.confirmed:
-        lines.append(f"  Confirmed:    YES")
+        lines.append("  Confirmed:    YES")
         if report.final_tx_hash:
             lines.append(f"  TX Hash:      {report.final_tx_hash}")
         if report.final_ledger_index:
@@ -325,7 +325,7 @@ def render_report(report: AttestationReport) -> str:
         if report.final_ledger_close_time:
             lines.append(f"  Close Time:   {report.final_ledger_close_time}")
     else:
-        lines.append(f"  Confirmed:    NO")
+        lines.append("  Confirmed:    NO")
     lines.append("")
 
     # Timeline section
@@ -353,7 +353,7 @@ def render_report(report: AttestationReport) -> str:
 
             # Exchange evidence
             if receipt.exchanges:
-                lines.append(f"      Evidence:")
+                lines.append("      Evidence:")
                 for ex in receipt.exchanges:
                     found_marker = "[stored]" if ex.record_found else "[digest only]"
                     lines.append(f"        - {ex.key}: {found_marker}")
@@ -361,9 +361,9 @@ def render_report(report: AttestationReport) -> str:
                     if ex.record_found and ex.timestamp:
                         lines.append(f"          recorded: {ex.timestamp}")
                     if ex.request_body_available:
-                        lines.append(f"          request body: available")
+                        lines.append("          request body: available")
                     if ex.response_body_available:
-                        lines.append(f"          response body: available")
+                        lines.append("          response body: available")
 
             if receipt.memo_digest:
                 lines.append(f"      Memo:     {receipt.memo_digest}")

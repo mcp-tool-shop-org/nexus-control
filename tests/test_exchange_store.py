@@ -9,7 +9,6 @@ Covers:
 - Integration with DclTransport
 """
 
-import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -17,7 +16,6 @@ import pytest
 
 from nexus_control.attestation.xrpl.exchange_store import ExchangeStore
 from nexus_control.attestation.xrpl.transport import DclTransport, ExchangeRecord
-
 
 # ---------------------------------------------------------------------------
 # Fixtures

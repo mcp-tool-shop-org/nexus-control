@@ -21,18 +21,16 @@ import pytest
 
 from nexus_control.attestation.intent import AttestationIntent
 from nexus_control.attestation.narrative import (
-    AttemptDiff,
     CANONICALIZATION,
+    NARRATIVE_SCHEMA,
+    NARRATIVE_VERSION,
     CheckStatus,
     ExchangeEvidence,
     IntegrityCheck,
     NarrativeReport,
-    NARRATIVE_SCHEMA,
-    NARRATIVE_VERSION,
     ReceiptEntry,
     XrplWitness,
     diff_attempts,
-    render_narrative,
     show_intent,
     show_queue,
     verify_narrative_digest,
@@ -47,7 +45,6 @@ from nexus_control.attestation.xrpl.exchange_store import ExchangeStore
 from nexus_control.attestation.xrpl.transport import ExchangeRecord
 from nexus_control.canonical_json import canonical_json_bytes
 from nexus_control.integrity import sha256_digest
-
 
 # ---------------------------------------------------------------------------
 # Fixtures

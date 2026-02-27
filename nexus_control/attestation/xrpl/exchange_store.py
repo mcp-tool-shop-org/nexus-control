@@ -18,15 +18,13 @@ Invariants:
 
 from __future__ import annotations
 
-import json
 import sqlite3
 from collections.abc import Iterator
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 from pathlib import Path
 from typing import Any
 
 from nexus_control.attestation.xrpl.transport import ExchangeRecord
-
 
 _SCHEMA = """\
 CREATE TABLE IF NOT EXISTS dcl_exchanges (
@@ -140,25 +138,21 @@ class ExchangeStore:
         content_digest = record.content_digest()
         store_time = created_at if created_at is not None else record.timestamp
 
-        with self._transaction() as conn:
-            try:
-                conn.execute(
-                    """
+        with self._transaction() as conn, suppress(sqlite3.IntegrityError):
+            conn.execute(
+                """
                     INSERT INTO dcl_exchanges
                     (content_digest, request_digest, response_digest, timestamp, created_at)
                     VALUES (?, ?, ?, ?, ?)
                     """,
-                    (
-                        content_digest,
-                        record.request_digest,
-                        record.response_digest,
-                        record.timestamp,
-                        store_time,
-                    ),
-                )
-            except sqlite3.IntegrityError:
-                # Already exists — idempotent
-                pass
+                (
+                    content_digest,
+                    record.request_digest,
+                    record.response_digest,
+                    record.timestamp,
+                    store_time,
+                ),
+            )
 
         # Store bodies if provided and body_path is configured
         if self._body_path is not None:

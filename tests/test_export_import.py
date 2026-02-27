@@ -9,13 +9,9 @@ Test plan:
 - Template coverage: snapshots included when present
 """
 
-import copy
-import json
 
-import pytest
 
 from nexus_control.bundle import (
-    BUNDLE_VERSION,
     DecisionBundle,
     compute_bundle_digest,
     validate_bundle_schema,

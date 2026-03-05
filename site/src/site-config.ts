@@ -14,7 +14,7 @@ export const config: SiteConfig = {
     headlineAccent: 'with cryptographic proof.',
     description: 'A thin control plane that turns "router can execute" into "org can safely decide to execute" — with approval workflows, policy enforcement, and tamper-evident audit packages.',
     primaryCta: { href: '#usage', label: 'Get started' },
-    secondaryCta: { href: '#tools', label: 'MCP tools' },
+    secondaryCta: { href: 'handbook/', label: 'Read the Handbook' },
     previews: [
       { label: 'Install', code: 'pip install nexus-control' },
       { label: 'Import', code: 'from nexus_control import NexusControlTools' },

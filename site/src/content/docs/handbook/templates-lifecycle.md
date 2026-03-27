@@ -48,11 +48,11 @@ result = tools.request(
     goal="Deploy v2.1.0",
     actor=actor,
     template_name="prod-deploy",
-    override_min_approvals=3,  # Stricter for this deploy
+    min_approvals=3,  # Stricter for this deploy
 )
 ```
 
-Override fields are applied on top of the template defaults. The original template remains unchanged.
+When `template_name` is specified, any explicit policy parameters (`min_approvals`, `allowed_modes`, `require_adapter_capabilities`, `max_steps`, `labels`) act as overrides on top of the template defaults. The original template remains unchanged.
 
 ### Listing and discovering templates
 
@@ -70,10 +70,15 @@ Introduced in v0.4.0, the lifecycle system provides computed state, blocking rea
 
 ### Computing lifecycle
 
+The `compute_lifecycle` function takes a `Decision` object (which already contains its events and policy from replay) and an optional timeline limit:
+
 ```python
 from nexus_control import compute_lifecycle
 
-lifecycle = compute_lifecycle(decision, events, policy)
+lifecycle = compute_lifecycle(decision)
+
+# Or with a custom timeline limit (default is 20)
+lifecycle = compute_lifecycle(decision, timeline_limit=50)
 ```
 
 ### Blocking reasons
@@ -85,15 +90,15 @@ for reason in lifecycle.blocking_reasons:
     print(f"{reason.code}: {reason.message}")
 ```
 
-Common blocking reasons:
+Blocking reason codes are stable across versions and ordered by a deterministic triage ladder:
 
-| Code | Meaning |
-|------|---------|
-| `APPROVALS_INSUFFICIENT` | Not enough approvals to meet the policy threshold |
-| `APPROVAL_EXPIRED` | One or more required approvals have lapsed |
-| `MODE_NOT_ALLOWED` | The requested execution mode is not in the policy's allowed list |
-| `ADAPTER_CAPABILITY_MISSING` | The router adapter does not declare a required capability |
-| `ALREADY_EXECUTED` | The decision has already been executed (no re-execution) |
+| Code | Priority | Meaning |
+|------|----------|---------|
+| `NO_POLICY` | 1 | Decision has no policy attached |
+| `ALREADY_EXECUTED` | 2 | Decision already ran successfully (terminal) |
+| `EXECUTION_FAILED` | 3 | Previous execution failed (terminal) |
+| `APPROVAL_EXPIRED` | 4 | Had enough approvals but some have lapsed |
+| `MISSING_APPROVALS` | 5 | Not enough approvals to meet the policy threshold |
 
 ### Timeline
 
@@ -111,8 +116,17 @@ Timeline entries include sequence numbers for ordering and truncation support fo
 A decision progresses through these states:
 
 ```
-CREATED → POLICY_ATTACHED → APPROVALS_COLLECTING → APPROVED → EXECUTING → COMPLETED
-                                                                       ↘ FAILED
+DRAFT → PENDING_APPROVAL → APPROVED → EXECUTING → COMPLETED
+                                               ↘ FAILED
 ```
 
-State transitions are driven by events in the append-only log. The current state is always computed by replaying all events from the beginning, never stored as mutable state.
+| State | Meaning |
+|-------|---------|
+| `draft` | Created but no policy attached yet |
+| `pending_approval` | Policy attached, waiting for sufficient approvals |
+| `approved` | Approval threshold met, ready for execution |
+| `executing` | Execution in progress |
+| `completed` | Execution finished successfully |
+| `failed` | Execution failed |
+
+State transitions are driven by events in the append-only log. The current state is always computed by replaying all events from the beginning, never stored as mutable state. Approval state is re-evaluated on every `APPROVAL_GRANTED` or `APPROVAL_REVOKED` event, so revoking an approval can move the decision back from `approved` to `pending_approval`.

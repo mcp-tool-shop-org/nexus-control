@@ -28,6 +28,7 @@ Everything is exportable, verifiable, and replayable.
 | [Templates & Lifecycle](/nexus-control/handbook/templates-lifecycle/) | Create reusable policy templates and understand decision lifecycle |
 | [Data Model](/nexus-control/handbook/data-model/) | Event-sourced architecture, export/import bundles, and audit packages |
 | [Reference](/nexus-control/handbook/reference/) | Development setup, security model, exit codes, and project structure |
+| [Beginners Guide](/nexus-control/handbook/beginners/) | Plain-language introduction for newcomers to governed execution |
 
 ## Key identifiers
 

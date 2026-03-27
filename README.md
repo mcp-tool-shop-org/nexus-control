@@ -160,7 +160,7 @@ result = tools.request(
     goal="Deploy v2.1.0",
     actor=actor,
     template_name="prod-deploy",
-    override_min_approvals=3,  # Stricter for this deploy
+    min_approvals=3,  # Stricter for this deploy
 )
 ```
 
@@ -245,7 +245,7 @@ Policy(
 # Install dev dependencies
 pip install -e ".[dev]"
 
-# Run tests (203 tests)
+# Run tests (636 tests)
 pytest
 
 # Type check (strict mode)
@@ -274,9 +274,29 @@ nexus-control/
 │   ├── audit_package.py     # Audit package types + verification
 │   ├── audit_export.py      # Audit package export + rendering
 │   ├── canonical_json.py    # Deterministic serialization
-│   └── integrity.py         # SHA-256 helpers
+│   ├── integrity.py         # SHA-256 helpers
+│   └── attestation/         # Cryptographic attestation subsystem
+│       ├── _signing.py      # Ed25519 signing + verification
+│       ├── intent.py        # Attestation intent declarations
+│       ├── receipt.py       # Attestation receipts + status
+│       ├── narrative.py     # Human-readable attestation narratives
+│       ├── queue.py         # Async attestation processing queue
+│       ├── replay.py        # Decision replay for attestation
+│       ├── storage.py       # Attestation persistence
+│       ├── worker.py        # Background attestation worker
+│       ├── flexiflow_adapter.py  # FlexiFlow integration
+│       └── xrpl/            # XRPL witness backend
+│           ├── adapter.py   # XRPL attestation adapter
+│           ├── client.py    # XRPL client wrapper
+│           ├── signer.py    # XRPL transaction signing
+│           ├── memo.py      # XRPL memo encoding
+│           ├── tx.py        # Transaction construction
+│           ├── transport.py # Network transport
+│           ├── exchange_store.py  # Exchange record storage
+│           ├── jsonrpc_client.py  # JSON-RPC client
+│           └── errors.py    # XRPL error types
 ├── schemas/                 # JSON schemas for tool inputs
-├── tests/                   # 203 tests across 9 test files
+├── tests/                   # 636 tests across 23 test files
 ├── ARCHITECTURE.md          # Mental model + design guarantees
 ├── QUICKSTART.md
 ├── README.md

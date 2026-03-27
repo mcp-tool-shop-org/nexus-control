@@ -25,7 +25,7 @@ pip install -e ".[dev]"
 
 ### Running tests
 
-Nexus Control has 203 tests across 9 test files:
+Nexus Control has 636 tests across 23 test files:
 
 ```bash
 # Run the full test suite
@@ -92,9 +92,16 @@ nexus-control/
 │   ├── audit_package.py     # Audit package types + verification
 │   ├── audit_export.py      # Audit package export + rendering
 │   ├── canonical_json.py    # Deterministic serialization
-│   └── integrity.py         # SHA-256 helpers
+│   ├── integrity.py         # SHA-256 helpers
+│   └── attestation/         # Cryptographic attestation subsystem
+│       ├── _signing.py      # Ed25519 signing + verification
+│       ├── intent.py        # Attestation intent declarations
+│       ├── receipt.py       # Attestation receipts + status
+│       ├── narrative.py     # Human-readable attestation narratives
+│       ├── queue.py         # Async attestation processing queue
+│       └── xrpl/            # XRPL witness backend
 ├── schemas/                 # JSON schemas for tool inputs
-├── tests/                   # 203 tests across 9 test files
+├── tests/                   # 636 tests across 23 test files
 ├── ARCHITECTURE.md          # Mental model + design guarantees
 ├── QUICKSTART.md
 ├── README.md
@@ -118,6 +125,8 @@ nexus-control/
 | `audit_export.py` | Audit package export with reference and embedded modes |
 | `canonical_json.py` | Deterministic JSON serialization for digest stability |
 | `integrity.py` | SHA-256 helpers for content-addressable hashing |
+| `attestation/` | Cryptographic attestation subsystem with Ed25519 signing, intents, receipts, and async queue |
+| `attestation/xrpl/` | XRPL witness backend for on-ledger attestation anchoring |
 
 ## Scorecard
 

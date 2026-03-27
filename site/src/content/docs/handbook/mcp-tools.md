@@ -22,7 +22,12 @@ This is the entry point for every governed execution. The request captures what 
 - `min_approvals` — number of distinct approvers required
 - `labels` — optional tags for filtering and organization
 - `template_name` — optional reference to a policy template
-- `override_min_approvals` — override the template's approval threshold
+- `plan` — optional pre-defined execution plan
+- `allowed_modes` — which modes are allowed by policy
+- `require_adapter_capabilities` — capabilities the router adapter must declare
+- `max_steps` — maximum execution steps
+
+When `template_name` is provided, explicit policy parameters (`min_approvals`, `allowed_modes`, etc.) act as overrides on top of the template defaults.
 
 ### nexus-control.approve
 
